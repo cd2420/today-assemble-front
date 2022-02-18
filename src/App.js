@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import customAxios from './config/customAxios';
+import METHOD_TYPE from './common/MethodType';
 
 function App() {
 
@@ -11,16 +12,7 @@ function App() {
 
   useEffect(
     () => {
-      axios (
-        {
-            url: '/api/v1/home'
-            , method: 'get'
-            , baseURL: 'http://localhost:8080'
-            , withCredentials: true
-        }
-    ).then((res) => {
-      callback(res.data);
-    });
+      customAxios(METHOD_TYPE.GET, "/home", callback);
     }
   );
 
