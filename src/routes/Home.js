@@ -4,19 +4,46 @@ import METHOD_TYPE from "../common/MethodType";
 import HEADER_SECTION from "../common/HeaderSection";
 import { Container, createTheme, CssBaseline, Grid, ThemeProvider } from "@mui/material";
 import Header from "../component/Header";
+import FeaturedPost from "../component/FeaturedPost";
+import moment from "moment";
 
 const Home = () => {
-    const [ testStr, setTestStr] = useState('');
+    const [ events, setEvents] = useState([]);
     
-    function callback(str) {
-        setTestStr(str);
-    }
-
     useEffect(
         () => {
             customAxios(METHOD_TYPE.GET, "/home", callback);
         }
+        ,[]
     );
+
+    function callback(data) {
+        data.map(event => 
+            {
+                event.key = data.id
+                createMainImage(event)
+                event.date = moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분')
+                return event
+            }
+        )
+        setEvents(data);
+
+    }
+
+    function createMainImage(event) {
+        const checkMainImages = event.eventsImagesDtos.filter(
+            item => {
+                return item.imagesType === 'MAIN'
+            }
+        )
+
+        if (checkMainImages.length > 0) {
+            event.mainImage = checkMainImages[0].image
+        } else {
+            event.mainImage = 'https://source.unsplash.com/random'
+        }
+    }
+
 
     const theme = createTheme();
 
@@ -27,13 +54,11 @@ const Home = () => {
                 <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
                 <main>
                     <Grid container spacing={4}>
-                        
-                    </Grid>
-                    <Grid container spacing={5} sx={{ mt: 3 }}>
-                        
+                        {events.map(event => (
+                            <FeaturedPost key={event.id} post={event} />
+                        ))}
                     </Grid>
                 </main>
-                {testStr}
             </Container>
         </ThemeProvider>
 
