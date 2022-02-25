@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import customAxios from "../config/customAxios";
-import METHOD_TYPE from "../common/MethodType";
+import API from "../config/customAxios";
 import HEADER_SECTION from "../common/HeaderSection";
 import { Container, createTheme, CssBaseline, Grid, ThemeProvider } from "@mui/material";
 import Header from "../component/Header";
@@ -12,12 +11,16 @@ const Home = () => {
     
     useEffect(
         () => {
-            customAxios(METHOD_TYPE.GET, "/home", callback);
+            async function getHomeData() {
+                const {data} = await API.get("/home")
+                printMainPage(data)
+            }
+            getHomeData()
         }
         ,[]
     );
 
-    function callback(data) {
+    function printMainPage(data) {
         data.map(event => 
             {
                 event.key = data.id
