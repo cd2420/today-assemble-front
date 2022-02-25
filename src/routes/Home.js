@@ -12,7 +12,7 @@ const Home = () => {
     useEffect(
         () => {
             async function getHomeData() {
-                const {data} = await API.get("/home")
+                const {data} = await API.get("/api/v1/home")
                 printMainPage(data)
             }
             getHomeData()
