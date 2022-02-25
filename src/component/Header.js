@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 
 function Header(props) {
-    const {sections, title} = props;
+  const {sections, title} = props;
 
   return (
     <React.Fragment>
@@ -26,8 +26,8 @@ function Header(props) {
         <IconButton>
           <SearchIcon />
         </IconButton>
-        <Button variant="outlined" size="small">
-          Sign up
+        <Button variant="outlined" size="small" href='/login'>
+          로그인
         </Button>
       </Toolbar>
       <Toolbar
