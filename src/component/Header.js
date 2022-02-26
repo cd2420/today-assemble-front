@@ -7,21 +7,32 @@ import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import GLOBAL_CONST from '../common/GlobalConst';
+import API from '../config/customAxios';
+import RESPONSE_STATUS from '../common/ResponseStatus';
 
 function Header(props) {
   const {sections, title} = props;
   const [isAuthorized, setIsAuthorized] = useState(false)
-
+  const [jwt, setJwt] = useState('')
   useEffect(() => {
-    const jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-    if (jwt) {
+    const _jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
+    if (_jwt) {
       setIsAuthorized(true)
+      setJwt(_jwt)
     }
   }, [])
 
-  const logout = () => {
-    localStorage.removeItem(GLOBAL_CONST.ACCESS_TOKEN)
-    setIsAuthorized(false)
+  const logout = async () => {
+    const {status} = await API.post("/logout", {
+      headers : {
+        'Authorization': jwt
+      }
+    })
+    if (status === RESPONSE_STATUS.OK) {
+      localStorage.removeItem(GLOBAL_CONST.ACCESS_TOKEN)
+      setIsAuthorized(false)
+      setJwt('')
+    }
   }
 
   return (
