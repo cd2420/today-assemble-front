@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import API from "../config/customAxios";
 import HEADER_SECTION from "../common/HeaderSection";
 import Header from "../component/Header";
@@ -17,6 +17,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import RESPONSE_STATUS from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
+import GLOBAL_CONST from "../common/GlobalConst";
 
 
 
@@ -24,6 +25,13 @@ const Login = () => {
 
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+
+    useEffect(() => {
+        const jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
+        if (jwt) {
+            window.history.back()
+        }
+    }, [])
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -36,7 +44,8 @@ const Login = () => {
             };
             const {headers, status} = await API.post("/login", JSON.stringify(accounts))
             if (status === RESPONSE_STATUS.OK) {
-                console.log(headers)
+                localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
+                window.history.back();
             }
         } catch (e) {
             setErrorMsg('아이디 혹은 비밀번호가 잘못되었습니다.');
