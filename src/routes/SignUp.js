@@ -18,9 +18,9 @@ const SignUp = () => {
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorText, setPasswordErrorText] = useState('');
 
-    const [name, setName] = useState('');
-    const [nameError, setNameError] = useState(false);
-    const [nameErrorText, setNameErrorText] = useState('');
+    const [userName, setUserName] = useState('');
+    const [userNameError, setUserNameError] = useState(false);
+    const [userNameErrorText, setUserNameErrorText] = useState('');
 
     const [gender, setGender] = useState('');
     const [genderError, setGenderError] = useState(false);
@@ -41,6 +41,7 @@ const SignUp = () => {
     }, [])
 
     const onchange = (event) => {
+        
         const {target: {name,value}} = event;
         if(name === "email") {
             setEmail(value);
@@ -48,22 +49,93 @@ const SignUp = () => {
             setPassword(value);
         } else if(name ==="password-check") {
             setPasswordCheck(value);
-        } else if(name ==="name") {
-            setName(value);
+        } else if(name ==="userName") {
+            setUserName(value);
         } else if(name ==="gender") {
             setGender(value);
         } else if(name ==="birth") {
             setBirth(value);
         }
+        validateProps(event)
         validate()
     };
+
+    const validateProps = (event) => {
+        const {target: {name,value}} = event;
+        if(name === "email") {
+            validateEmail(value)
+        } else if(name ==="password") {
+            validatePassword(name, value);
+        } else if(name ==="password-check") {
+            validatePassword(name, value);
+        } else if(name ==="name") {
+            
+        } else if(name ==="gender") {
+            setGender(value);
+        } else if(name ==="birth") {
+            setBirth(value);
+        }
+    };
+
+    const validateEmail = (val) => {
+        const regEmail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+
+        if (val === '') {
+            setEmailError(false)
+            setEmailErrorText('')
+            return
+        }
+
+        if (!regEmail.test(val)) {
+            setEmailError(true)
+            setEmailErrorText('잘못된 이메일 형식입니다.')
+            return 
+        }
+
+        setEmailError(false)
+        setEmailErrorText('')
+        
+    }
+
+    const validatePassword = (type, val) => {
+        
+        if (val === '') {
+            setPasswordError(false)
+            setPasswordErrorText('')
+            return
+        }
+
+        if (val.length < 6 || val.length > 20) {
+            setPasswordError(true)
+            setPasswordErrorText('비밀번호는 최소 6, 최대 20자리')
+            return
+        }
+
+        if(type ==="password") {
+            if (val !== passwordCheck) {
+                setPasswordError(true)
+                setPasswordErrorText('비밀번호가 일치하지 않습니다.')
+                return
+            }
+        } else if(type ==="password-check") {
+            if (val !== password) {
+                setPasswordError(true)
+                setPasswordErrorText('비밀번호가 일치하지 않습니다.')
+                return
+            }
+        }
+
+        setPasswordError(false)
+        setPasswordErrorText('')
+        
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
     };
 
     const validate = () => {
-        setSignUpButton(false)
+        // setSignUpButton(false)
     }
 
     const handleTextClick = () => {
@@ -99,6 +171,7 @@ const SignUp = () => {
                                     <TextField
                                         required
                                         fullWidth
+                                        autoFocus
                                         id="email"
                                         label="Email"
                                         name="email"
@@ -117,11 +190,10 @@ const SignUp = () => {
                                         fullWidth
                                         id="name"
                                         label="이름"
-                                        autoFocus
-                                        value={name}
+                                        value={userName}
                                         onChange={onchange}
-                                        error={nameError}
-                                        helperText={nameErrorText}
+                                        error={userNameError}
+                                        helperText={userNameErrorText}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
