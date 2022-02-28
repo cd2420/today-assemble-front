@@ -1,6 +1,7 @@
 
 const GLOBAL_CONST = {
-    'ACCESS_TOKEN' : 'ACCESS_TOKEN'
+    ACCESS_TOKEN : 'ACCESS_TOKEN'
+    , ACCOUNTS : 'ACCOUNTS'
 }
 
 export default GLOBAL_CONST;

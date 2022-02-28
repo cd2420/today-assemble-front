@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from "react";
 import API from "../config/customAxios";
-import { Avatar, Box, Button, Container, createTheme, CssBaseline, Grid, Link, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, createTheme, CssBaseline, FormControl, FormControlLabel, FormLabel, Grid, Link, Radio, RadioGroup, TextField, ThemeProvider, Typography } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Header from "../component/Header";
 import HEADER_SECTION from "../common/HeaderSection";
 import GLOBAL_CONST from "../common/GlobalConst";
+import DateComponent from "../component/DateComponent";
+import RESPONSE_STATUS from "../common/ResponseStatus";
 
 
 const SignUp = () => {
@@ -23,12 +25,7 @@ const SignUp = () => {
     const [userNameErrorText, setUserNameErrorText] = useState('');
 
     const [gender, setGender] = useState('');
-    const [genderError, setGenderError] = useState(false);
-    const [genderErrorText, setGenderErrorText] = useState('');
-
-    const [birth, setBirth] = useState('');
-    const [birthError, setBirthError] = useState(false);
-    const [birthErrorText, setBirthErrorText] = useState('');
+    const [birth, setBirth] = useState(new Date());
 
     const [signUpButton, setSignUpButton] = useState(true);
 
@@ -38,9 +35,27 @@ const SignUp = () => {
         if (jwt) {
             window.history.back()
         }
-    }, [])
+        validate()
+    }, [email, password, userName, gender, birth])
 
-    const onchange = (event) => {
+    const validate = () => {
+        if (email 
+            && password 
+            && passwordCheck 
+            && userName 
+            && gender
+            && birth
+            && !emailError
+            && !passwordError
+            && !userNameError
+            ) {
+                setSignUpButton(false)
+        } else {
+            setSignUpButton(true)
+        }
+    }
+
+    const onChange = (event) => {
         
         const {target: {name,value}} = event;
         if(name === "email") {
@@ -57,7 +72,6 @@ const SignUp = () => {
             setBirth(value);
         }
         validateProps(event)
-        validate()
     };
 
     const validateProps = (event) => {
@@ -68,21 +82,17 @@ const SignUp = () => {
             validatePassword(name, value);
         } else if(name ==="password-check") {
             validatePassword(name, value);
-        } else if(name ==="name") {
-            
-        } else if(name ==="gender") {
-            setGender(value);
-        } else if(name ==="birth") {
-            setBirth(value);
+        } else if(name ==="userName") {
+            validateUserName(value)
         }
     };
 
     const validateEmail = (val) => {
         const regEmail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
 
+        setEmailError(false)
+        setEmailErrorText('')
         if (val === '') {
-            setEmailError(false)
-            setEmailErrorText('')
             return
         }
 
@@ -91,17 +101,15 @@ const SignUp = () => {
             setEmailErrorText('잘못된 이메일 형식입니다.')
             return 
         }
-
-        setEmailError(false)
-        setEmailErrorText('')
         
     }
 
     const validatePassword = (type, val) => {
         
+        setPasswordError(false)
+        setPasswordErrorText('')
+
         if (val === '') {
-            setPasswordError(false)
-            setPasswordErrorText('')
             return
         }
 
@@ -124,22 +132,62 @@ const SignUp = () => {
                 return
             }
         }
-
-        setPasswordError(false)
-        setPasswordErrorText('')
         
+    }
+
+    const validateUserName = (val) => {
+        const regUserName = /^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]).{0,10}$/
+
+        setUserNameError(false)
+        setUserNameErrorText('')
+
+        if (val === '') {
+            return
+        }
+
+        if (val.length < 3 || val.length > 10) {
+            setUserNameError(true)
+            setUserNameErrorText('이름은 최소 3, 최대 10자리')
+            return 
+        }
+
+        if (!regUserName.test(val)) {
+            setUserNameError(true)
+            setUserNameErrorText('잘못된 이름 형식입니다.')
+            return 
+        }
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        try {
+            const accounts = getAccounts()
+            const {data, status} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts))
+            if (status === RESPONSE_STATUS.OK) {
+                localStorage.setItem(GLOBAL_CONST.ACCOUNTS, data);
+                window.history.back();
+            }
+        } catch (e) {
+            console.log(e)
+        }
     };
 
-    const validate = () => {
-        // setSignUpButton(false)
+    const getAccounts = () => {
+        const age = getAge()
+        const accounts = {
+            email
+            , password
+            , name: userName
+            , gender
+            , birth
+            , age
+        };
+        return accounts
     }
 
-    const handleTextClick = () => {
-
+    const getAge = () => {
+        return new Date().getFullYear() - birth.getFullYear() + 1;
     }
 
     const theme = createTheme();
@@ -157,7 +205,6 @@ const SignUp = () => {
                             flexDirection: 'column',
                             alignItems: 'center',
                         }}
-                        onClick={handleTextClick}
                     >
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                             <LockOutlinedIcon />
@@ -177,21 +224,21 @@ const SignUp = () => {
                                         name="email"
                                         autoComplete="email"
                                         value={email}
-                                        onChange={onchange}
+                                        onChange={onChange}
                                         error={emailError}
                                         helperText={emailErrorText}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                        autoComplete="name"
-                                        name="name"
+                                        autoComplete="userName"
+                                        name="userName"
                                         required
                                         fullWidth
-                                        id="name"
+                                        id="userName"
                                         label="이름"
                                         value={userName}
-                                        onChange={onchange}
+                                        onChange={onChange}
                                         error={userNameError}
                                         helperText={userNameErrorText}
                                     />
@@ -206,7 +253,7 @@ const SignUp = () => {
                                         id="password"
                                         autoComplete="password"
                                         value={password}
-                                        onChange={onchange}
+                                        onChange={onChange}
                                         error={passwordError}
                                         helperText={passwordErrorText}
                                     />
@@ -221,10 +268,29 @@ const SignUp = () => {
                                         id="password-check"
                                         autoComplete="password-check"
                                         value={passwordCheck}
-                                        onChange={onchange}
+                                        onChange={onChange}
                                         error={passwordError}
                                         helperText={passwordErrorText}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControl 
+                                        required
+                                        onChange={onChange}
+                                    >
+                                        <FormLabel id="gender-label">성별</FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="gender-label"
+                                            name="gender"
+                                        >
+                                            <FormControlLabel value="FEMALE" control={<Radio />} label="여성" />
+                                            <FormControlLabel value="MALE" control={<Radio />} label="남성" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <DateComponent onChange={onChange} />
                                 </Grid>
                             </Grid>
                             <Button
