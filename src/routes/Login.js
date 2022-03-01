@@ -16,7 +16,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
 import GLOBAL_CONST from "../common/GlobalConst";
-import { getLocalStorageData } from "../common/Utils";
+import { getLocalStorageData, getAccountsDataByJwt } from "../common/Utils";
 
 
 
@@ -43,11 +43,7 @@ const Login = () => {
             };
             const {headers, status} = await API.post("/login", JSON.stringify(accounts))
             if (status === RESPONSE_STATUS.OK) {
-                const {data, status} = await API.get("/api/v1/accounts", {
-                    headers : {
-                      'Authorization': headers.authorization
-                    }
-                })
+                const {data, status} = await getAccountsDataByJwt(headers.authorization)
                 if (status === RESPONSE_STATUS.OK) {
                     localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
                     localStorage.setItem(GLOBAL_CONST.ACCOUNTS, JSON.stringify(data));

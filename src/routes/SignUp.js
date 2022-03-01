@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import API from "../config/customAxios";
-import { Avatar, Box, Button, Container, createTheme, CssBaseline, FormControl, FormControlLabel, FormLabel, Grid, Link, Radio, RadioGroup, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Avatar, Box, Container, createTheme, CssBaseline, FormControl, FormControlLabel, FormLabel, Grid, Link, Radio, RadioGroup, TextField, ThemeProvider, Typography } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Header from "../component/Header";
 import HEADER_SECTION from "../common/HeaderSection";
@@ -8,6 +8,7 @@ import GLOBAL_CONST from "../common/GlobalConst";
 import DateComponent from "../component/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import { getLocalStorageData } from "../common/Utils";
+import { LoadingButton } from "@mui/lab";
 
 
 const SignUp = () => {
@@ -29,7 +30,7 @@ const SignUp = () => {
     const [birth, setBirth] = useState(new Date());
 
     const [signUpButton, setSignUpButton] = useState(true);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const {is_ok} = getLocalStorageData();
@@ -162,7 +163,7 @@ const SignUp = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        setIsLoading(true)
         try {
             const accounts = getAccounts()
             const {data, status, headers} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts))
@@ -174,6 +175,7 @@ const SignUp = () => {
         } catch (e) {
             console.log(e)
         }
+        setIsLoading(false)
     };
 
     const getAccounts = () => {
@@ -296,16 +298,17 @@ const SignUp = () => {
                                     <DateComponent onChange={onChange} />
                                 </Grid>
                             </Grid>
-                            <Button
+                            <LoadingButton
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 onClick={handleSubmit}
                                 disabled={signUpButton}
+                                loading={isLoading}
                             >
                                 회원가입
-                            </Button>
+                            </LoadingButton>
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
                                     <Link href="/login" variant="body2">
