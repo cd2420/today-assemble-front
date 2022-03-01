@@ -6,7 +6,8 @@ import Header from "../component/Header";
 import HEADER_SECTION from "../common/HeaderSection";
 import GLOBAL_CONST from "../common/GlobalConst";
 import DateComponent from "../component/DateComponent";
-import RESPONSE_STATUS from "../common/ResponseStatus";
+import {RESPONSE_STATUS} from "../common/ResponseStatus";
+import { getLocalStorageData } from "../common/Utils";
 
 
 const SignUp = () => {
@@ -31,12 +32,12 @@ const SignUp = () => {
 
 
     useEffect(() => {
-        const jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-        const accounts = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
-        if (jwt && accounts) {
+        const {is_ok} = getLocalStorageData();
+        if (is_ok) {
             window.history.back()
         }
         validate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [email, password, userName, gender, birth])
 
     const validate = () => {

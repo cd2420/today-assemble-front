@@ -8,17 +8,18 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import GLOBAL_CONST from '../common/GlobalConst';
 import API from '../config/customAxios';
-import RESPONSE_STATUS from '../common/ResponseStatus';
+import {RESPONSE_STATUS} from '../common/ResponseStatus';
+import { getLocalStorageData } from '../common/Utils';
 
 function Header(props) {
   const {sections, title} = props;
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [jwt, setJwt] = useState('')
   const [accounts, setAccounts] = useState({})
+  
   useEffect(() => {
-    const _jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-    const _accounts = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
-    if (_jwt && _accounts) {
+    const {_jwt, _accounts, is_ok} = getLocalStorageData();
+    if (is_ok) {
       setIsAuthorized(true)
       setAccounts(JSON.parse(_accounts))
       setJwt(_jwt)
