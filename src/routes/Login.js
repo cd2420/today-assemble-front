@@ -15,7 +15,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
-import GLOBAL_CONST from "../common/GlobalConst";
+import {LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import { getLocalStorageData, getAccountsDataByJwt } from "../common/Utils";
 
 
@@ -45,8 +45,8 @@ const Login = () => {
             if (status === RESPONSE_STATUS.OK) {
                 const {data, status} = await getAccountsDataByJwt(headers.authorization)
                 if (status === RESPONSE_STATUS.OK) {
-                    localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
-                    localStorage.setItem(GLOBAL_CONST.ACCOUNTS, JSON.stringify(data));
+                    localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
+                    localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
                     window.history.back();
                 }
                 
@@ -117,7 +117,7 @@ const Login = () => {
                             <Grid container>
                                 <Grid item xs>
                                     <Link href="#" variant="body2">
-                                        패스워드 찾기
+                                        패스워드 없이 로그인
                                     </Link>
                                 </Grid>
                                 <Grid item>

@@ -4,7 +4,7 @@ import { Avatar, Box, Container, createTheme, CssBaseline, FormControl, FormCont
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Header from "../component/Header";
 import HEADER_SECTION from "../common/HeaderSection";
-import GLOBAL_CONST from "../common/GlobalConst";
+import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import DateComponent from "../component/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import { getLocalStorageData } from "../common/Utils";
@@ -74,11 +74,10 @@ const SignUp = () => {
         } else if(name ==="birth") {
             setBirth(value);
         }
-        validateProps(event)
+        validateProps(name,value)
     };
 
-    const validateProps = (event) => {
-        const {target: {name,value}} = event;
+    const validateProps = (name,value) => {
         if(name === "email") {
             validateEmail(value)
         } else if(name ==="password") {
@@ -168,12 +167,16 @@ const SignUp = () => {
             const accounts = getAccounts()
             const {data, status, headers} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts))
             if (status === RESPONSE_STATUS.OK) {
-                localStorage.setItem(GLOBAL_CONST.ACCOUNTS, JSON.stringify(data));
-                localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
+                localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
+                localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
                 window.history.back();
             }
         } catch (e) {
-            console.log(e)
+            const {errorCode, msg} = e.response.data
+            if (errorCode === ERROR_CODE.ALREADY_EXISTS_USER) {
+                setEmailError(true)
+                setEmailErrorText(msg)
+            }
         }
         setIsLoading(false)
     };

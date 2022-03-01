@@ -1,9 +1,9 @@
 import API from "../config/customAxios"
-import GLOBAL_CONST from "./GlobalConst"
+import {LOCAL_STORAGE_CONST} from "./GlobalConst"
 
 export function getLocalStorageData() {
-    const _jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-    const _accounts = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
+    const _jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
+    const _accounts = localStorage.getItem(LOCAL_STORAGE_CONST.ACCOUNTS)
     if (_jwt && _accounts) {
         return {
             _jwt

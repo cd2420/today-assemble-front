@@ -1,15 +1,8 @@
 const HEADER_SECTION = {
     'sections' : [
-        { title: 'Technology', url: '#' },
-        { title: 'Design', url: '#' },
-        { title: 'Culture', url: '#' },
-        { title: 'Business', url: '#' },
-        { title: 'Politics', url: '#' },
-        { title: 'Opinion', url: '#' },
-        { title: 'Science', url: '#' },
-        { title: 'Health', url: '#' },
-        { title: 'Style', url: '#' },
-        { title: 'Travel', url: '#' },
+        { title: '모임생성', url: '#' },
+        { title: '참여중인 모임', url: '#' },
+        { title: '지역 검색', url: '#' },
       ]
     , 'title' : '오늘의 모임'
 }

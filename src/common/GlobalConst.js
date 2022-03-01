@@ -1,7 +1,9 @@
 
-const GLOBAL_CONST = {
+export const LOCAL_STORAGE_CONST = {
     ACCESS_TOKEN : 'ACCESS_TOKEN'
     , ACCOUNTS : 'ACCOUNTS'
 }
 
-export default GLOBAL_CONST;
+export const ERROR_CODE = {
+    ALREADY_EXISTS_USER: 'ALREADY_EXISTS_USER'
+}
