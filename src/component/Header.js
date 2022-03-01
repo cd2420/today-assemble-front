@@ -14,13 +14,13 @@ function Header(props) {
   const {sections, title} = props;
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [jwt, setJwt] = useState('')
-  const [account, setAccount] = useState({})
+  const [accounts, setAccounts] = useState({})
   useEffect(() => {
     const _jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-    const _account = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
-    if (_jwt && _account) {
+    const _accounts = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
+    if (_jwt && _accounts) {
       setIsAuthorized(true)
-      setAccount(_account)
+      setAccounts(JSON.parse(_accounts))
       setJwt(_jwt)
     }
   }, [])
@@ -36,6 +36,7 @@ function Header(props) {
       localStorage.removeItem(GLOBAL_CONST.ACCOUNTS)
       setIsAuthorized(false)
       setJwt('')
+      setAccounts({})
     }
   }
 
@@ -66,7 +67,7 @@ function Header(props) {
           (
             <>
               <Button variant="outlined" size="small" href='/profile'>
-                프로필
+                {accounts.name}
               </Button>
               <Button variant="outlined" size="small" onClick={logout}>
                 로그아웃

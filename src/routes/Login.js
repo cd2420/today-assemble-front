@@ -28,7 +28,8 @@ const Login = () => {
 
     useEffect(() => {
         const jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-        if (jwt) {
+        const accounts = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
+        if (jwt && accounts) {
             window.history.back()
         }
     }, [])
@@ -44,8 +45,17 @@ const Login = () => {
             };
             const {headers, status} = await API.post("/login", JSON.stringify(accounts))
             if (status === RESPONSE_STATUS.OK) {
-                localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
-                window.history.back();
+                const {data, status} = await API.get("/api/v1/accounts", {
+                    headers : {
+                      'Authorization': headers.authorization
+                    }
+                })
+                if (status === RESPONSE_STATUS.OK) {
+                    localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
+                    localStorage.setItem(GLOBAL_CONST.ACCOUNTS, JSON.stringify(data));
+                    window.history.back();
+                }
+                
             }
         } catch (e) {
             setErrorMsg('아이디 혹은 비밀번호가 잘못되었습니다.');
@@ -102,10 +112,6 @@ const Login = () => {
                                 autoComplete="current-password"
                             />
                             <FormHelperText error={error}>{errorMsg}</FormHelperText>
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="로그인 유지"
-                            />
                             <Button
                                 type="submit"
                                 fullWidth

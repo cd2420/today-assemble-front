@@ -32,7 +32,8 @@ const SignUp = () => {
 
     useEffect(() => {
         const jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-        if (jwt) {
+        const accounts = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
+        if (jwt && accounts) {
             window.history.back()
         }
         validate()
@@ -165,7 +166,7 @@ const SignUp = () => {
             const accounts = getAccounts()
             const {data, status, headers} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts))
             if (status === RESPONSE_STATUS.OK) {
-                localStorage.setItem(GLOBAL_CONST.ACCOUNTS, data);
+                localStorage.setItem(GLOBAL_CONST.ACCOUNTS, JSON.stringify(data));
                 localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
                 window.history.back();
             }
