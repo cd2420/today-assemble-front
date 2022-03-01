@@ -22,6 +22,8 @@ import { getLocalStorageData, getAccountsDataByJwt } from "../common/Utils";
 
 const Login = () => {
 
+    const [formLogin, setFormLogin] = useState(true);
+
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -32,6 +34,10 @@ const Login = () => {
         }
     }, [])
 
+    const changeLoginType = () => {
+        setFormLogin(!formLogin)
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
        
@@ -41,15 +47,24 @@ const Login = () => {
               email: formData.get('email'),
               password: formData.get('password')
             };
-            const {headers, status} = await API.post("/login", JSON.stringify(accounts))
-            if (status === RESPONSE_STATUS.OK) {
-                const {data, status} = await getAccountsDataByJwt(headers.authorization)
+            let url = "/login"
+            if (!formLogin) {
+                url = "/api/v1/accounts" + url
+            }
+            const {headers, status} = await API.post(url, JSON.stringify(accounts))
+
+            if (formLogin) {
                 if (status === RESPONSE_STATUS.OK) {
-                    localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
-                    localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
-                    window.history.back();
+                    const {data, status} = await getAccountsDataByJwt(headers.authorization)
+                    if (status === RESPONSE_STATUS.OK) {
+                        localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
+                        localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
+                        window.history.back();
+                    }
                 }
-                
+            } else {
+                setError(true)
+                setErrorMsg('이메일을 확인하세요.')
             }
         } catch (e) {
             setErrorMsg('아이디 혹은 비밀번호가 잘못되었습니다.');
@@ -95,6 +110,7 @@ const Login = () => {
                                 autoComplete="email"
                                 autoFocus
                             />
+
                             <TextField
                                 margin="normal"
                                 required
@@ -104,6 +120,7 @@ const Login = () => {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                disabled={!formLogin}
                             />
                             <FormHelperText error={error}>{errorMsg}</FormHelperText>
                             <Button
@@ -116,8 +133,8 @@ const Login = () => {
                             </Button>
                             <Grid container>
                                 <Grid item xs>
-                                    <Link href="#" variant="body2">
-                                        패스워드 없이 로그인
+                                    <Link onClick={changeLoginType} href='#' variant="body2">
+                                        {formLogin ? '패스워드 없이 로그인' : '패스워드 로그인'}
                                     </Link>
                                 </Grid>
                                 <Grid item>
