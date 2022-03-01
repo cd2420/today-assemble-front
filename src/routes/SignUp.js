@@ -163,9 +163,10 @@ const SignUp = () => {
 
         try {
             const accounts = getAccounts()
-            const {data, status} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts))
+            const {data, status, headers} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts))
             if (status === RESPONSE_STATUS.OK) {
                 localStorage.setItem(GLOBAL_CONST.ACCOUNTS, data);
+                localStorage.setItem(GLOBAL_CONST.ACCESS_TOKEN, headers.authorization);
                 window.history.back();
             }
         } catch (e) {

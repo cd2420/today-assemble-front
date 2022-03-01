@@ -14,10 +14,13 @@ function Header(props) {
   const {sections, title} = props;
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [jwt, setJwt] = useState('')
+  const [account, setAccount] = useState({})
   useEffect(() => {
     const _jwt = localStorage.getItem(GLOBAL_CONST.ACCESS_TOKEN)
-    if (_jwt) {
+    const _account = localStorage.getItem(GLOBAL_CONST.ACCOUNTS)
+    if (_jwt && _account) {
       setIsAuthorized(true)
+      setAccount(_account)
       setJwt(_jwt)
     }
   }, [])
@@ -30,6 +33,7 @@ function Header(props) {
     })
     if (status === RESPONSE_STATUS.OK) {
       localStorage.removeItem(GLOBAL_CONST.ACCESS_TOKEN)
+      localStorage.removeItem(GLOBAL_CONST.ACCOUNTS)
       setIsAuthorized(false)
       setJwt('')
     }
