@@ -6,14 +6,17 @@ import Header from "../component/Header";
 import FeaturedPost from "../component/FeaturedPost";
 import moment from "moment";
 
+
 const Home = () => {
-    const [ events, setEvents] = useState([]);
+
+    const [events, setEvents] = useState([]);
     
     useEffect(
         () => {
             async function getHomeData() {
                 const {data} = await API.get("/api/v1/home")
                 printMainPage(data)
+                
             }
             getHomeData()
         }

@@ -4,17 +4,22 @@ import {LOCAL_STORAGE_CONST} from "./GlobalConst"
 export function getLocalStorageData() {
     const _jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
     const _accounts = localStorage.getItem(LOCAL_STORAGE_CONST.ACCOUNTS)
+    const is_ok = true
+    
+    let result = {}
     if (_jwt && _accounts) {
-        return {
+        result = {
             _jwt
             , _accounts
-            , is_ok: true
+            , is_ok
         }
     } else {
-        return {
+        result = {
             is_ok: false
         }
     }
+
+    return result
 }
 
 export async function getAccountsDataByJwt(jwt) {
