@@ -17,12 +17,15 @@ import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
 import {LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import { getLocalStorageData, getAccountsDataByJwt } from "../common/Utils";
+import { LoadingButton } from "@mui/lab";
 
 
 
 const Login = () => {
 
     const [formLogin, setFormLogin] = useState(true);
+    const [loginButton, setSignUpButton] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -40,7 +43,8 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-       
+        setSignUpButton(true)
+        setIsLoading(true)
         try {
             const formData = new FormData(event.currentTarget);
             const accounts = {
@@ -65,10 +69,14 @@ const Login = () => {
             } else {
                 setError(true)
                 setErrorMsg('이메일을 확인하세요.')
+                setSignUpButton(false)
+                setIsLoading(false)
             }
         } catch (e) {
             setErrorMsg('아이디 혹은 비밀번호가 잘못되었습니다.');
             setError(true);
+            setSignUpButton(false)
+            setIsLoading(false)
         }
     };
 
@@ -123,14 +131,16 @@ const Login = () => {
                                 disabled={!formLogin}
                             />
                             <FormHelperText error={error}>{errorMsg}</FormHelperText>
-                            <Button
+                            <LoadingButton
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
+                                disabled={loginButton}
+                                loading={isLoading}
                             >
                                 로그인
-                            </Button>
+                            </LoadingButton>
                             <Grid container>
                                 <Grid item xs>
                                     <Link onClick={changeLoginType} href='#' variant="body2">
