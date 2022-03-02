@@ -86,6 +86,7 @@ function Header(props) {
       setIsAuthorized(false)
       setJwt('')
       setAccounts(null)
+      window.location.href='/home'
     }
   }
 
