@@ -3,7 +3,6 @@ import API from "../config/customAxios";
 import HEADER_SECTION from "../common/HeaderSection";
 import Header from "../component/Header";
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -118,18 +117,25 @@ const Login = () => {
                                 autoComplete="email"
                                 autoFocus
                             />
+                            <>
+                            {
+                                formLogin
+                                && (
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        name="password"
+                                        label="Password"
+                                        type="password"
+                                        id="password"
+                                        autoComplete="current-password"
+                                        // disabled={!formLogin}
+                                    />
 
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                disabled={!formLogin}
-                            />
+                                )
+                            }
+                            </>
                             <FormHelperText error={error}>{errorMsg}</FormHelperText>
                             <LoadingButton
                                 type="submit"
