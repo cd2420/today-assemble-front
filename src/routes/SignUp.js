@@ -169,7 +169,7 @@ const SignUp = () => {
             if (status === RESPONSE_STATUS.OK) {
                 localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
                 localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
-                window.history.back();
+                window.location.href = '/home';
             }
         } catch (e) {
             const {errorCode, msg} = e.response.data
