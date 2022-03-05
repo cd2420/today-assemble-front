@@ -6,25 +6,28 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getLocalStorageData } from "../common/Utils";
-import { Box, Button, ButtonGroup, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, FormControl, FormControlLabel, FormLabel, Grid, ImageList, ImageListItem, Input, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { TabsUnstyled } from "@mui/base";
 import DateComponent from "../component/DateComponent";
-import { Label } from "@mui/icons-material";
-
+import { Image, Label } from "@mui/icons-material";
+import * as filestack from 'filestack-js';
+import ImageUploading from "react-images-uploading";
 
 
 const Profile = () => {
 
-    const [accounts, setAccounts] = useState(null)
-    const [accountsPage, setAccountsPage] = useState(true)
+    const [accounts, setAccounts] = useState(null);
+    const [accountsPage, setAccountsPage] = useState(true);
+    let [profileImg, setProfileImg] = useState([]);
 
-    const [myEventsPage, setMyEventsPage] = useState(false)
-    const [myLikesPage, setMyLikesPage] = useState(false)
+    const [myEventsPage, setMyEventsPage] = useState(false);
+    const [myLikesPage, setMyLikesPage] = useState(false);
 
     const buttons = [
         <Button key="1">내 계정</Button>,
-        <Button key="2">내 모임</Button>,
-        <Button key="3">관심 모임</Button>,
+        <Button key="2">비밀번호 변경</Button>,
+        <Button key="3">내 모임</Button>,
+        <Button key="4">관심 모임</Button>,
       ];
 
     useEffect(() => {
@@ -35,6 +38,32 @@ const Profile = () => {
             window.location.href='/login'
         }
     }, [])
+
+    // const upload = (event) => {
+    //     event.preventDefault();
+    //     const reader = new FileReader();
+    //     const img = event.target.files[0];
+
+    //     reader.onloadend = () => {
+    //         setProfileImg({
+    //           file : img,
+    //           previewURL : reader.result
+    //         })
+    //     }
+    //     reader.readAsDataURL(img);
+        
+    //     /**
+    //      * 프로필 수정하는 함수에 넣어주기
+    //      */
+    //     const formData = new FormData();
+    //     formData.append('file', profileImg)
+    // }
+
+    const upload = (imageList, addUpdateIndex) => {
+        setProfileImg(imageList);
+        const img = imageList[0].data_url
+        // console.log(imageList)
+    }
 
     const theme = createTheme();
 
@@ -67,6 +96,51 @@ const Profile = () => {
                                 accounts && (
                                     <Grid container spacing={2}>
                                         <Grid item xs={12}>
+                                            
+                                            <ImageUploading
+                                                multiple
+                                                value={profileImg}
+                                                onChange={upload}
+                                                maxNumber={1}
+                                                dataURLKey="data_url"
+                                            >
+                                                {({
+                                                    imageList,
+                                                    onImageUpload,
+                                                    onImageRemoveAll,
+                                                    onImageUpdate,
+                                                    onImageRemove,
+                                                    isDragging,
+                                                    dragProps
+                                                    }) => (
+                                                    // write your building UI
+                                                    <div className="upload__image-wrapper">
+                                                        <Button
+                                                            variant="outlined"
+                                                            style={isDragging ? { color: "red" } : null}
+                                                            onClick={onImageUpload}
+                                                            {...dragProps}
+                                                            disabled={imageList[0]}
+                                                        >
+                                                            이미지 업로드
+                                                        </Button>
+                                                        &nbsp;
+                                                        {imageList.map((image, index) => (
+                                                            <div key={index} className="image-item">
+                                                                <img src={image.data_url} alt="" width="250" />
+                                                                <div className="image-item__btn-wrapper">
+                                                                    <Button onClick={() => onImageUpdate(index)} variant="outlined">이미지 교체</Button>
+                                                                    <Button onClick={() => onImageRemove(index)} variant="outlined">이미지 제거</Button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </ImageUploading>
+                                            
+                                            
+                                        </Grid>
+                                        <Grid item xs={12}>
                                             <TextField
                                                 required
                                                 fullWidth
@@ -75,7 +149,6 @@ const Profile = () => {
                                                 name="email"
                                                 autoComplete="email"
                                                 value={ accounts.email}
-                                                disabled
                                                 // onChange={onChange}
                                                 // error={emailError}
                                                 // helperText={emailErrorText}
@@ -90,7 +163,6 @@ const Profile = () => {
                                                 id="userName"
                                                 label="이름"
                                                 value={accounts.name}
-                                                disabled
                                                 // onChange={onChange}
                                                 // error={userNameError}
                                                 // helperText={userNameErrorText}
@@ -99,7 +171,6 @@ const Profile = () => {
                                         <Grid item xs={12}>
                                             <FormControl
                                                 required
-                                                disabled
                                                 // onChange={onChange}
                                             >
                                                 <FormLabel id="gender-label">성별</FormLabel>
