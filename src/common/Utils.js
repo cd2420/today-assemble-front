@@ -5,7 +5,7 @@ export function getLocalStorageData() {
     const _jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
     const _accounts = localStorage.getItem(LOCAL_STORAGE_CONST.ACCOUNTS)
     const is_ok = true
-    
+
     let result = {}
     if (_jwt && _accounts) {
         result = {
@@ -42,4 +42,8 @@ export async function getAccountsDataByJwt(jwt) {
     }
     return result
     
+}
+
+export function getAge(birth) {
+    return new Date().getFullYear() - birth.getFullYear() + 1;
 }

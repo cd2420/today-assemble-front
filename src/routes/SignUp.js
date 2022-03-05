@@ -7,7 +7,7 @@ import HEADER_SECTION from "../common/HeaderSection";
 import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import DateComponent from "../component/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
-import { getLocalStorageData } from "../common/Utils";
+import { getAge, getLocalStorageData } from "../common/Utils";
 import { LoadingButton } from "@mui/lab";
 
 
@@ -182,7 +182,7 @@ const SignUp = () => {
     };
 
     const getAccounts = () => {
-        const age = getAge()
+        const age = getAge(birth)
         const accounts = {
             email
             , password
@@ -194,9 +194,7 @@ const SignUp = () => {
         return accounts
     }
 
-    const getAge = () => {
-        return new Date().getFullYear() - birth.getFullYear() + 1;
-    }
+    
 
     const theme = createTheme();
 
