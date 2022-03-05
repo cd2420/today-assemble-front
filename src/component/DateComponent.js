@@ -34,11 +34,11 @@ function fakeFetch(date, { signal }) {
 
 const initialValue = new Date();
 
-export default function DateComponent({onChange}) {
+export default function DateComponent({onChange, birth}) {
   const requestAbortController = React.useRef(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
-  const [value, setValue] = React.useState(initialValue);
+  const [value, setValue] = React.useState(birth ? birth : initialValue);
 
   const fetchHighlightedDays = (date) => {
     const controller = new AbortController();
