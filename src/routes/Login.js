@@ -107,56 +107,64 @@ const Login = () => {
                             로그인
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit} onClick={handleTextClick} noValidate sx={{ mt: 1 }}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                            />
-                            <>
-                            {
-                                formLogin
-                                && (
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
                                     <TextField
                                         margin="normal"
                                         required
                                         fullWidth
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="current-password"
-                                        // disabled={!formLogin}
+                                        id="email"
+                                        label="Email Address"
+                                        name="email"
+                                        autoComplete="email"
+                                        autoFocus
                                     />
-
-                                )
-                            }
-                            </>
-                            <FormHelperText error={error}>{errorMsg}</FormHelperText>
-                            <LoadingButton
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                                disabled={loginButton}
-                                loading={isLoading}
-                            >
-                                로그인
-                            </LoadingButton>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link onClick={changeLoginType} href='#' variant="body2">
-                                        {formLogin ? '패스워드 없이 로그인' : '패스워드 로그인'}
-                                    </Link>
                                 </Grid>
-                                <Grid item>
-                                    <Link href="/signUp" variant="body2">
-                                        회원가입
-                                    </Link>
+                                <Grid item xs={12}>
+                                {
+                                    formLogin
+                                    && (
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            id="password"
+                                            autoComplete="current-password"
+                                            // disabled={!formLogin}
+                                        />
+
+                                    )
+                                }
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormHelperText error={error}>{errorMsg}</FormHelperText>
+                                    <LoadingButton
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                        disabled={loginButton}
+                                        loading={isLoading}
+                                    >
+                                        로그인
+                                    </LoadingButton>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Grid container >
+                                        <Grid item xs>
+                                            <Link onClick={changeLoginType} href='#' variant="body2">
+                                                {formLogin ? '패스워드 없이 로그인' : '패스워드 로그인'}
+                                            </Link>
+                                        </Grid>
+                                        <Grid item>
+                                            <Link href="/signUp" variant="body2">
+                                                회원가입
+                                            </Link>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Box>
