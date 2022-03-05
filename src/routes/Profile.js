@@ -5,21 +5,31 @@ import Header from "../component/Header";
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getLocalStorageData } from "../common/Utils";
-import { Box, Button, ButtonGroup, FormControl, FormControlLabel, FormLabel, Grid, ImageList, ImageListItem, Input, Radio, RadioGroup, TextField, Typography } from "@mui/material";
-import { TabsUnstyled } from "@mui/base";
+import { getAge, getLocalStorageData } from "../common/Utils";
+import { Box, Button, ButtonGroup, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import DateComponent from "../component/DateComponent";
-import { Image, Label } from "@mui/icons-material";
-import * as filestack from 'filestack-js';
 import ImageUploading from "react-images-uploading";
+import { LoadingButton } from "@mui/lab";
+import { RESPONSE_STATUS } from "../common/ResponseStatus";
+import { LOCAL_STORAGE_CONST } from "../common/GlobalConst";
+import axios from "axios";
 
 
 const Profile = () => {
 
     const [accounts, setAccounts] = useState(null);
+    const [jwt, setJwt] = useState('');
     const [accountsPage, setAccountsPage] = useState(true);
     let [profileImg, setProfileImg] = useState([]);
 
+    const [userName, setUserName] = useState('');
+    const [userNameError, setUserNameError] = useState(false);
+    const [userNameErrorText, setUserNameErrorText] = useState('');
+
+    const [gender, setGender] = useState('');
+    const [birth, setBirth] = useState(new Date());
+
+    const [isLoading, setIsLoading] = useState(false);
     const [myEventsPage, setMyEventsPage] = useState(false);
     const [myLikesPage, setMyLikesPage] = useState(false);
 
@@ -31,38 +41,81 @@ const Profile = () => {
       ];
 
     useEffect(() => {
-        const {_accounts, is_ok } = getLocalStorageData()
+        const {_accounts, _jwt, is_ok } = getLocalStorageData()
         if (is_ok) {
-            setAccounts(JSON.parse(_accounts))
+            setJwt(_jwt)
+            const tmp_accounts = JSON.parse(_accounts)
+            tmp_accounts.birth = new Date(tmp_accounts.birth)
+            setAccounts(tmp_accounts)
+            setUserName(tmp_accounts.name)
+            setGender(tmp_accounts.gender)
+            setBirth(tmp_accounts.birth)
+            if (tmp_accounts.accountsImagesDto.image) {
+                setProfileImg([{
+                    data_url : tmp_accounts.accountsImagesDto.image
+                }])
+            }
+            
         } else {
             window.location.href='/login'
         }
     }, [])
 
-    // const upload = (event) => {
-    //     event.preventDefault();
-    //     const reader = new FileReader();
-    //     const img = event.target.files[0];
-
-    //     reader.onloadend = () => {
-    //         setProfileImg({
-    //           file : img,
-    //           previewURL : reader.result
-    //         })
-    //     }
-    //     reader.readAsDataURL(img);
-        
-    //     /**
-    //      * 프로필 수정하는 함수에 넣어주기
-    //      */
-    //     const formData = new FormData();
-    //     formData.append('file', profileImg)
-    // }
-
     const upload = (imageList, addUpdateIndex) => {
+        console.log(imageList[0])
         setProfileImg(imageList);
-        const img = imageList[0].data_url
-        // console.log(imageList)
+    }
+
+    const onChange = (event) => {
+        
+        const {target: {name, value}} = event;
+        if(name ==="userName") {
+            setUserName(value);
+        } else if(name ==="gender") {
+            setGender(value);
+        } else if(name ==="birth") {
+            setBirth(value);
+        }
+    };
+
+    const updateAccounts = async (event) => {
+        event.preventDefault();
+        // setIsLoading(true);
+
+        accounts.name = userName;
+        accounts.gender = gender;
+        accounts.birth = birth;
+        accounts.age = getAge(accounts.birth);
+
+        let image = '';
+        if (profileImg.length > 0) {
+            image = profileImg[0].data_url;
+            accounts.accountsImagesDto = {
+                imagesType: 'MAIN'
+                , image
+            }
+        }
+
+        try {
+            const {data, status, headers} = await API.put(
+                `/api/v1/accounts/${accounts.id}`
+                , JSON.stringify(accounts)
+                , {
+                    headers : {
+                        'Authorization': jwt
+                    }
+                }
+            )
+
+            if (status === RESPONSE_STATUS.OK) {
+                localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
+                setAccounts(data);
+            }
+        } catch (e) {
+            const {errorCode, msg} = e.response.data
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const theme = createTheme();
@@ -149,9 +202,7 @@ const Profile = () => {
                                                 name="email"
                                                 autoComplete="email"
                                                 value={ accounts.email}
-                                                // onChange={onChange}
-                                                // error={emailError}
-                                                // helperText={emailErrorText}
+                                                disabled
                                             />
                                         </Grid>
                                         <Grid item xs={12}>
@@ -162,8 +213,8 @@ const Profile = () => {
                                                 fullWidth
                                                 id="userName"
                                                 label="이름"
-                                                value={accounts.name}
-                                                // onChange={onChange}
+                                                value={userName}
+                                                onChange={onChange}
                                                 // error={userNameError}
                                                 // helperText={userNameErrorText}
                                             />
@@ -171,7 +222,7 @@ const Profile = () => {
                                         <Grid item xs={12}>
                                             <FormControl
                                                 required
-                                                // onChange={onChange}
+                                                onChange={onChange}
                                             >
                                                 <FormLabel id="gender-label">성별</FormLabel>
                                                 <RadioGroup
@@ -195,12 +246,22 @@ const Profile = () => {
                                                 생년월일
                                             </Typography>
                                             <DateComponent 
-                                                // onChange={onChange} 
-                                                date = {accounts.birth}
+                                                onChange={onChange} 
+                                                date = {birth}
                                             />
                                         </Grid>
+                                        <LoadingButton
+                                            type="submit"
+                                            variant="contained"
+                                            sx={{ mt: 3, mb: 2 }}
+                                            onClick={updateAccounts}
+                                            disabled={isLoading}
+                                            loading={isLoading}
+                                        >
+                                            수정
+                                        </LoadingButton>
                                     </Grid>
-
+                                
                                 )
                             }
                         </Grid>
