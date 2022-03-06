@@ -107,7 +107,7 @@ const Profile = () => {
 
     const updateAccounts = async (event) => {
         event.preventDefault();
-        // setIsLoading(true);
+        setIsLoading(true);
 
         accounts.name = userName;
         accounts.gender = gender;
@@ -136,7 +136,7 @@ const Profile = () => {
 
             if (status === RESPONSE_STATUS.OK) {
                 localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
-                setAccounts(data);
+                window.location.replace("/profile")
             }
         } catch (e) {
             const {errorCode, msg} = e.response.data
