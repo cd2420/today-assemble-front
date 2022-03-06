@@ -274,7 +274,7 @@ const Profile = () => {
                                             </Typography>
                                             <DateComponent 
                                                 onChange={onChange} 
-                                                date = {birth}
+                                                birth = {birth}
                                             />
                                         </Grid>
                                         <LoadingButton

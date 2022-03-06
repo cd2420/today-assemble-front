@@ -38,7 +38,7 @@ export default function DateComponent({onChange, birth}) {
   const requestAbortController = React.useRef(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState([1, 2, 15]);
-  const [value, setValue] = React.useState(birth ? birth : initialValue);
+  const [value, setValue] = React.useState(initialValue);
 
   const fetchHighlightedDays = (date) => {
     const controller = new AbortController();
@@ -60,7 +60,12 @@ export default function DateComponent({onChange, birth}) {
   };
 
   React.useEffect(() => {
-    fetchHighlightedDays(initialValue);
+    if (birth) {
+      fetchHighlightedDays(birth);
+      setValue(birth);
+    } else {
+      fetchHighlightedDays(initialValue);
+    }
     // abort request on unmount
     return () => requestAbortController.current?.abort();
   }, []);
@@ -88,7 +93,7 @@ export default function DateComponent({onChange, birth}) {
             { 
               target : {
                 name:'birth'
-                ,value:value
+                ,value:newValue
               }
             }
           );
