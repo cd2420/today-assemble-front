@@ -12,8 +12,6 @@ import ImageUploading from "react-images-uploading";
 import { LoadingButton } from "@mui/lab";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
 import { LOCAL_STORAGE_CONST } from "../common/GlobalConst";
-import axios from "axios";
-
 
 const Profile = () => {
 
@@ -29,7 +27,9 @@ const Profile = () => {
     const [gender, setGender] = useState('');
     const [birth, setBirth] = useState(new Date());
 
+    const [updateButton, setUpdateButton] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [myEventsPage, setMyEventsPage] = useState(false);
     const [myLikesPage, setMyLikesPage] = useState(false);
 
@@ -54,8 +54,7 @@ const Profile = () => {
                 setProfileImg([{
                     data_url : tmp_accounts.accountsImagesDto.image
                 }])
-            }
-            
+            } 
         } else {
             window.location.href='/login'
         }
@@ -71,12 +70,40 @@ const Profile = () => {
         const {target: {name, value}} = event;
         if(name ==="userName") {
             setUserName(value);
+            validateUserName(value);
         } else if(name ==="gender") {
             setGender(value);
         } else if(name ==="birth") {
             setBirth(value);
         }
     };
+
+    const validateUserName = (val) => {
+        const regUserName = /^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]).{0,10}$/
+
+        setUserNameError(false)
+        setUserNameErrorText('')
+
+        if (val === '') {
+            setUpdateButton(true)
+            return
+        }
+
+        if (val.length < 3 || val.length > 10) {
+            setUserNameError(true)
+            setUserNameErrorText('이름은 최소 3, 최대 10자리')
+            setUpdateButton(true)
+            return 
+        }
+
+        if (!regUserName.test(val)) {
+            setUserNameError(true)
+            setUserNameErrorText('잘못된 이름 형식입니다.')
+            setUpdateButton(true)
+            return 
+        }
+        setUpdateButton(false)
+    }
 
     const updateAccounts = async (event) => {
         event.preventDefault();
@@ -90,10 +117,10 @@ const Profile = () => {
         let image = '';
         if (profileImg.length > 0) {
             image = profileImg[0].data_url;
-            accounts.accountsImagesDto = {
-                imagesType: 'MAIN'
-                , image
-            }
+        }
+        accounts.accountsImagesDto = {
+            imagesType: 'MAIN'
+            , image
         }
 
         try {
@@ -215,8 +242,8 @@ const Profile = () => {
                                                 label="이름"
                                                 value={userName}
                                                 onChange={onChange}
-                                                // error={userNameError}
-                                                // helperText={userNameErrorText}
+                                                error={userNameError}
+                                                helperText={userNameErrorText}
                                             />
                                         </Grid>
                                         <Grid item xs={12}>
@@ -255,7 +282,7 @@ const Profile = () => {
                                             variant="contained"
                                             sx={{ mt: 3, mb: 2 }}
                                             onClick={updateAccounts}
-                                            disabled={isLoading}
+                                            disabled={updateButton}
                                             loading={isLoading}
                                         >
                                             수정
