@@ -4,7 +4,7 @@ import React, {useState, useEffect} from 'react';
 import ImageUploading from "react-images-uploading";
 import { LOCAL_STORAGE_CONST } from '../common/GlobalConst';
 import { RESPONSE_STATUS } from '../common/ResponseStatus';
-import { getAge } from '../common/Utils';
+import { getAge, validateUserName } from '../common/Utils';
 import API from '../config/customAxios';
 import DateComponent from './DateComponent';
 
@@ -12,23 +12,18 @@ const Profile = ({accounts, jwt}) => {
 
     let [profileImg, setProfileImg] = useState([]);
 
-    const [userName, setUserName] = useState('');
+    const [userName, setUserName] = useState(accounts.name);
     const [userNameError, setUserNameError] = useState(false);
     const [userNameErrorText, setUserNameErrorText] = useState('');
 
-    const [gender, setGender] = useState('');
-    const [birth, setBirth] = useState(new Date());
+    const [gender, setGender] = useState(accounts.gender);
+    const [birth, setBirth] = useState(new Date(accounts.birth));
 
     const [updateButton, setUpdateButton] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const [myEventsPage, setMyEventsPage] = useState(false);
-    const [myLikesPage, setMyLikesPage] = useState(false);
-
     useEffect(() => {
-        setUserName(accounts.name)
-        setGender(accounts.gender)
-        setBirth(accounts.birth)
+
         if (accounts.accountsImagesDto.image) {
             setProfileImg([{
                 data_url : accounts.accountsImagesDto.image
@@ -47,40 +42,13 @@ const Profile = ({accounts, jwt}) => {
         const {target: {name, value}} = event;
         if(name ==="userName") {
             setUserName(value);
-            validateUserName(value);
+            validateUserName(value, setUserNameError, setUserNameErrorText, setUpdateButton);
         } else if(name ==="gender") {
             setGender(value);
         } else if(name ==="birth") {
             setBirth(value);
         }
     };
-
-    const validateUserName = (val) => {
-        const regUserName = /^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]).{0,10}$/
-
-        setUserNameError(false)
-        setUserNameErrorText('')
-
-        if (val === '') {
-            setUpdateButton(true)
-            return
-        }
-
-        if (val.length < 3 || val.length > 10) {
-            setUserNameError(true)
-            setUserNameErrorText('이름은 최소 3, 최대 10자리')
-            setUpdateButton(true)
-            return 
-        }
-
-        if (!regUserName.test(val)) {
-            setUserNameError(true)
-            setUserNameErrorText('잘못된 이름 형식입니다.')
-            setUpdateButton(true)
-            return 
-        }
-        setUpdateButton(false)
-    }
 
     const updateAccounts = async (event) => {
         event.preventDefault();

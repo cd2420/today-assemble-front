@@ -7,7 +7,7 @@ import HEADER_SECTION from "../common/HeaderSection";
 import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import DateComponent from "../component/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
-import { getAge, getLocalStorageData } from "../common/Utils";
+import { getAge, getLocalStorageData, validateUserName } from "../common/Utils";
 import { LoadingButton } from "@mui/lab";
 
 
@@ -85,7 +85,7 @@ const SignUp = () => {
         } else if(name ==="password-check") {
             validatePassword(name, value);
         } else if(name ==="userName") {
-            validateUserName(value)
+            validateUserName(value, setUserNameError, setUserNameErrorText);
         }
     };
 
@@ -135,29 +135,6 @@ const SignUp = () => {
             }
         }
         
-    }
-
-    const validateUserName = (val) => {
-        const regUserName = /^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]).{0,10}$/
-
-        setUserNameError(false)
-        setUserNameErrorText('')
-
-        if (val === '') {
-            return
-        }
-
-        if (val.length < 3 || val.length > 10) {
-            setUserNameError(true)
-            setUserNameErrorText('이름은 최소 3, 최대 10자리')
-            return 
-        }
-
-        if (!regUserName.test(val)) {
-            setUserNameError(true)
-            setUserNameErrorText('잘못된 이름 형식입니다.')
-            return 
-        }
     }
 
     const handleSubmit = async (event) => {
