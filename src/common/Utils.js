@@ -55,30 +55,62 @@ export function validateUserName(val, setNameErrorFunc, setNameErrorMsgFunc, set
     setNameErrorMsgFunc('')
 
     if (val === '') {
-        if (setButtonFunc) {
-            setButtonFunc(true)
-        }
+
+        setButtonFunc(true)
         return
     }
 
     if (val.length < 3 || val.length > 10) {
         setNameErrorFunc(true)
         setNameErrorMsgFunc('이름은 최소 3, 최대 10자리')
-        if (setButtonFunc) {
-            setButtonFunc(true)
-        }
+
+        setButtonFunc(true)
+
         return 
     }
 
     if (!regUserName.test(val)) {
         setNameErrorFunc(true)
         setNameErrorMsgFunc('잘못된 이름 형식입니다.')
-        if (setButtonFunc) {
-            setButtonFunc(true)
-        }
+
+        setButtonFunc(true)
+
         return 
     }
-    if (setButtonFunc) {
-        setButtonFunc(false)
+
+    setButtonFunc(false)
+
+}
+
+export function validatePassword(val, check_val, setPasswordError, setPasswordErrorText, setUpdateButton) {
+        
+    setPasswordError(false)
+    setPasswordErrorText('')
+
+    if (val === '') {
+
+        setUpdateButton(true)
+
+        return
     }
+
+    if (val.length < 6 || val.length > 20) {
+        setPasswordError(true)
+        setPasswordErrorText('비밀번호는 최소 6, 최대 20자리')
+        
+        setUpdateButton(true)
+
+        return
+    }
+
+    if (val !== check_val) {
+        setPasswordError(true)
+        setPasswordErrorText('비밀번호가 일치하지 않습니다.')
+        
+        setUpdateButton(true)
+
+        return
+    }
+ 
+    setUpdateButton(false)
 }

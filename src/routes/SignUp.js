@@ -7,7 +7,7 @@ import HEADER_SECTION from "../common/HeaderSection";
 import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import DateComponent from "../component/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
-import { getAge, getLocalStorageData, validateUserName } from "../common/Utils";
+import { getAge, getLocalStorageData, validatePassword, validateUserName } from "../common/Utils";
 import { LoadingButton } from "@mui/lab";
 
 
@@ -39,7 +39,7 @@ const SignUp = () => {
         }
         validate()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [email, password, userName, gender, birth])
+    }, [email, password, passwordCheck, userName, gender, birth])
 
     const validate = () => {
         if (email 
@@ -75,17 +75,18 @@ const SignUp = () => {
             setBirth(value);
         }
         validateProps(name,value)
+        
     };
 
     const validateProps = (name,value) => {
         if(name === "email") {
             validateEmail(value)
         } else if(name ==="password") {
-            validatePassword(name, value);
+            validatePassword(value, passwordCheck, setPasswordError, setPasswordErrorText, (check) => {})
         } else if(name ==="password-check") {
-            validatePassword(name, value);
+            validatePassword(value, password, setPasswordError, setPasswordErrorText, (check) => {})
         } else if(name ==="userName") {
-            validateUserName(value, setUserNameError, setUserNameErrorText);
+            validateUserName(value, setUserNameError, setUserNameErrorText, (check) => {});
         }
     };
 
@@ -102,37 +103,6 @@ const SignUp = () => {
             setEmailError(true)
             setEmailErrorText('잘못된 이메일 형식입니다.')
             return 
-        }
-        
-    }
-
-    const validatePassword = (type, val) => {
-        
-        setPasswordError(false)
-        setPasswordErrorText('')
-
-        if (val === '') {
-            return
-        }
-
-        if (val.length < 6 || val.length > 20) {
-            setPasswordError(true)
-            setPasswordErrorText('비밀번호는 최소 6, 최대 20자리')
-            return
-        }
-
-        if(type ==="password") {
-            if (val !== passwordCheck) {
-                setPasswordError(true)
-                setPasswordErrorText('비밀번호가 일치하지 않습니다.')
-                return
-            }
-        } else if(type ==="password-check") {
-            if (val !== password) {
-                setPasswordError(true)
-                setPasswordErrorText('비밀번호가 일치하지 않습니다.')
-                return
-            }
         }
         
     }
