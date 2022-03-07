@@ -71,7 +71,7 @@ function Header(props) {
   }, [])
 
   const priflePage = () => {
-    window.location.href='/profile'
+    window.location.href='/setting'
   }
 
   const logout = async () => {

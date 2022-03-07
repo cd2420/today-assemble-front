@@ -2,7 +2,7 @@ import React from "react"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "../routes/Home";
 import Login from "../routes/Login";
-import Profile from "../routes/Profile";
+import Setting from "../routes/Setting";
 import SignUp from "../routes/SignUp";
 
 const AppRouter = () => {
@@ -13,7 +13,7 @@ const AppRouter = () => {
                 <Route path="/home" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signUp" element={<SignUp />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/setting" element={<Setting />} />
             </Routes>
         </BrowserRouter>
     );
