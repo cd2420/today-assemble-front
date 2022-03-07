@@ -8,6 +8,7 @@ import { getLocalStorageData } from "../common/Utils";
 import { Box, Button, ButtonGroup, Grid} from "@mui/material";
 
 import Profile from "../component/Profile";
+import PasswordPage from "../component/PasswordPage";
 
 const Setting = () => {
 
@@ -31,13 +32,14 @@ const Setting = () => {
     }, [])
 
     const changePage = (e) => {
+        e.preventDefault();
         const {target: {name}} = e;
         if (name === "profile") {
             setProfilePage(true)
             setPasswordPage(false)
             setMyEventsPage(false)
             setLikeEventsPage(false)
-            
+
         } else if (name === "password") {
             setProfilePage(false)
             setPasswordPage(true)
@@ -98,6 +100,11 @@ const Setting = () => {
                             {
                                 (accounts && profilePage && !passwordPage && !myEventsPage && !likeEventsPage) && (
                                     <Profile accounts={accounts} jwt={jwt} />
+                                )
+                            }
+                            {
+                                (accounts && !profilePage && passwordPage && !myEventsPage && !likeEventsPage) && (
+                                    <PasswordPage accounts={accounts} jwt={jwt} />
                                 )
                             }
                         </Grid>
