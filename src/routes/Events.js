@@ -20,6 +20,7 @@ import { LoadingButton } from "@mui/lab";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
 import DateComponent from "../component/DateComponent";
 import TakeTime from "../component/TakeTime";
+import DaumMap from "../component/DaumMap";
 
 
 
@@ -161,17 +162,8 @@ const Events = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    장소 찾기
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="address"
-                                        label="주소"
-                                        id="address"
-                                        autoComplete="address"
-                                        // value={address}
-                                        onChange={onChange}
-                                    />
+                                    모임 장소
+                                    <DaumMap />
                                 </Grid>
                             </Grid>
                             <LoadingButton
