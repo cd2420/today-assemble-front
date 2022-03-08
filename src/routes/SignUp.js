@@ -71,7 +71,7 @@ const SignUp = () => {
             setUserName(value);
         } else if(name ==="gender") {
             setGender(value);
-        } else if(name ==="birth") {
+        } else if(name ==="date") {
             setBirth(value);
         }
         validateProps(name,value)

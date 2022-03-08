@@ -92,7 +92,7 @@ export default function DateComponent({onChange, birth}) {
           onChange(
             { 
               target : {
-                name:'birth'
+                name:'date'
                 ,value:newValue
               }
             }

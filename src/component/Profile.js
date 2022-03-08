@@ -45,7 +45,7 @@ const Profile = ({accounts, jwt}) => {
             validateUserName(value, setUserNameError, setUserNameErrorText, setUpdateButton);
         } else if(name ==="gender") {
             setGender(value);
-        } else if(name ==="birth") {
+        } else if(name ==="date") {
             setBirth(value);
         }
     };
