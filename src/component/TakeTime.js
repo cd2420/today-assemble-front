@@ -18,7 +18,7 @@ const MenuProps = {
   },
 };
 
-export default function TakeTime() {
+export default function TakeTime({onChange}) {
   const [takeTimes, setTakeTimes] = useState([]);
   const [takeTime, setTakeTime] = useState(1);
 
@@ -32,10 +32,16 @@ export default function TakeTime() {
   }, [])
 
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
+    const { target: { value } } = event;
     setTakeTime(value);
+    onChange(
+        { 
+          target : {
+            name:'takeTime'
+            ,value
+          }
+        }
+      );
   };
 
   return (

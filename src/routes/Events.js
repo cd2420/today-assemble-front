@@ -31,6 +31,7 @@ const Events = () => {
     const [eventsType, setEventsType] = useState('OFFLINE');
     const [eventsTime, setEventsTime] = useState(new Date());
     const [takeTime, setTakeTime] = useState(1);
+    const [address, setAddress] = useState({});
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -156,7 +157,7 @@ const Events = () => {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TakeTime 
-
+                                        onChange={onChange}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
