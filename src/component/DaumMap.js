@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 const { kakao } = window;
 const { daum } = window;
 
-const DaumMap = () => {
+const DaumMap = ({onChange}) => {
 
     const [container, setContainer] = useState({})
     const [map, setMap] = useState({})
@@ -16,7 +16,7 @@ const DaumMap = () => {
         setContainer(document.getElementById("map"));
     
         let options = {
-          center: new kakao.maps.LatLng(35.85133, 127.734086),
+          center: new kakao.maps.LatLng(37.566826, 126.9786567),
           level: 3,
         };
     
@@ -33,6 +33,7 @@ const DaumMap = () => {
             map: _map
         }))
     }, []);
+
 
     const sample5_execDaumPostcode = () => {
         new daum.Postcode({
@@ -57,6 +58,14 @@ const DaumMap = () => {
                         map.setCenter(coords);
                         // 마커를 결과값으로 받은 위치로 옮긴다.
                         marker.setPosition(coords)
+
+                        onChange({target: {
+                            name: "address"
+                            ,value: {
+                                address: addr
+                                , longitude: result.x
+                                , latitude: result.y
+                            }}})
                     }
                 });
             }
@@ -66,7 +75,7 @@ const DaumMap = () => {
 
     return (
         <div>
-            <input type="text" id="sample5_address" placeholder="주소" />
+            <input type="text" id="sample5_address"  placeholder="주소" />
             <input type="button" onClick={sample5_execDaumPostcode} value="주소 검색" /><br />
             <div id="map" 
                 style={{width:"300px", height:"300px", display:"none"}}

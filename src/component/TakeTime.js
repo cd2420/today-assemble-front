@@ -50,7 +50,7 @@ export default function TakeTime({onChange}) {
         <InputLabel id="demo-multiple-checkbox-label">걸리는 시간</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"
-          id="demo-multiple-checkbox"
+          id="demo-select"
           value={takeTime}
           onChange={handleChange}
           MenuProps={MenuProps}
