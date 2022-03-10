@@ -1,16 +1,16 @@
 import { LoadingButton } from '@mui/lab';
 import { Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import React, {useState, useEffect} from 'react';
-import ImageUploading from "react-images-uploading";
 import { LOCAL_STORAGE_CONST } from '../common/GlobalConst';
 import { RESPONSE_STATUS } from '../common/ResponseStatus';
 import { getAge, validateUserName } from '../common/Utils';
 import API from '../config/customAxios';
 import DateComponent from './DateComponent';
+import MainImageUpload from './MainImageUpload';
 
 const Profile = ({accounts, jwt}) => {
 
-    let [profileImg, setProfileImg] = useState([]);
+    const [profileImg, setProfileImg] = useState([]);
 
     const [userName, setUserName] = useState(accounts.name);
     const [userNameError, setUserNameError] = useState(false);
@@ -33,7 +33,6 @@ const Profile = ({accounts, jwt}) => {
     }, [])
 
     const upload = (imageList, addUpdateIndex) => {
-        console.log(imageList[0])
         setProfileImg(imageList);
     }
 
@@ -92,49 +91,8 @@ const Profile = ({accounts, jwt}) => {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12}>            
-                <ImageUploading
-                    multiple
-                    value={profileImg}
-                    onChange={upload}
-                    maxNumber={1}
-                    dataURLKey="data_url"
-                >
-                    {({
-                        imageList,
-                        onImageUpload,
-                        onImageRemoveAll,
-                        onImageUpdate,
-                        onImageRemove,
-                        isDragging,
-                        dragProps
-                        }) => (
-                        // write your building UI
-                        <div className="upload__image-wrapper">
-                            <Button
-                                variant="outlined"
-                                style={isDragging ? { color: "red" } : null}
-                                onClick={onImageUpload}
-                                {...dragProps}
-                                disabled={imageList[0]}
-                            >
-                                이미지 업로드
-                            </Button>
-                            &nbsp;
-                            {imageList.map((image, index) => (
-                                <div key={index} className="image-item">
-                                    <img src={image.data_url} alt="" width="250" />
-                                    <div className="image-item__btn-wrapper">
-                                        <Button onClick={() => onImageUpdate(index)} variant="outlined">이미지 교체</Button>
-                                        <Button onClick={() => onImageRemove(index)} variant="outlined">이미지 제거</Button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </ImageUploading>
-                
-                
+            <Grid item xs={12}>
+                <MainImageUpload upload={upload} profileImg={profileImg}/>            
             </Grid>
             <Grid item xs={12}>
                 <TextField
