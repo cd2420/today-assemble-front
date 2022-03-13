@@ -14,11 +14,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
-import {LOCAL_STORAGE_CONST} from "../common/GlobalConst";
+import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import { getLocalStorageData, getAccountsDataByJwt } from "../common/Utils";
 import { DateTimePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
-import DateComponent from "../component/DateComponent";
 import TakeTime from "../component/TakeTime";
 import DaumMap from "../component/DaumMap";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -35,9 +34,15 @@ const Events = () => {
     const [description, setDescription] = useState('');
     const [maxMembers, setMaxMembers] = useState(1);
     const [eventsType, setEventsType] = useState('OFFLINE');
+
     const [eventsTime, setEventsTime] = useState(new Date());
+    const [eventsTimeError, setEventsTimeError] = useState(false);
+    const [eventsTimeErrorText, setEventsTimeErrorText] = useState('');
+
+
     const [takeTime, setTakeTime] = useState(1);
     const [_address, setAddress] = useState({});
+    const [createButton, setCreateButton] = useState(true);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -48,7 +53,19 @@ const Events = () => {
         } else {
             window.location.href ='/login';
         }
-    }, [])
+        validate()
+    }, [eventName, _address])
+
+    const validate = () => {
+        if (eventName 
+            && Object.keys(_address).length
+            ) {
+                setCreateButton(false)
+        } else {
+            setCreateButton(true)
+        }
+
+    }
 
     const upload = (imageList, addUpdateIndex) => {
         setProfileImg(imageList);
@@ -61,7 +78,7 @@ const Events = () => {
         } else if(name === "description") {
             setDescription(value);
         } else if(name === "maxMembers") {
-            setMaxMembers(value);
+            validateMaxMembers(value)
         } else if(name === "eventsType") {
             setEventsType(value);
         } else if(name === "date") {
@@ -69,9 +86,19 @@ const Events = () => {
         } else if(name === "takeTime") {
             setTakeTime(value);
         } else if(name === "address") {
-            setAddress(value)
+            setAddress(value);
         }
     }
+
+    const validateMaxMembers = (value) => {
+        if (value <= 0) {
+            setMaxMembers(1);
+        } else if (value > 50) {
+            setMaxMembers(50);
+        } else {
+            setMaxMembers(value);
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -112,6 +139,10 @@ const Events = () => {
         } catch(e) {
             const {errorCode, msg} = e.response.data;
             console.log(errorCode, msg);
+            if (errorCode === ERROR_CODE.DATE_OVERLAP) {
+                setEventsTimeError(true)
+                setEventsTimeErrorText(msg)
+            }
         }
         
         
@@ -200,17 +231,6 @@ const Events = () => {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <Typography
-                                        component="h6"
-                                        color="inherit"
-                                        noWrap
-                                        sx={{ flexGrow: 1 }}
-                                    >
-                                        모임 날짜
-                                    </Typography>
-                                    <DateComponent 
-                                        onChange={onChange} 
-                                    /> */}
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DateTimePicker
                                             renderInput={(props) => <TextField {...props} />}
@@ -218,9 +238,12 @@ const Events = () => {
                                             value={eventsTime}
                                             onChange={(newValue) => {
                                                 setEventsTime(newValue);
+                                                setEventsTimeError(false)
+                                                setEventsTimeErrorText('')
                                             }}
                                         />
                                     </LocalizationProvider>
+                                    <FormHelperText error={eventsTimeError}>{eventsTimeErrorText}</FormHelperText>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TakeTime 
@@ -238,7 +261,7 @@ const Events = () => {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 onClick={handleSubmit}
-                                // disabled={createButton}
+                                disabled={createButton}
                                 loading={isLoading}
                             >
                                 모임 생성

@@ -43,7 +43,7 @@ const Home = () => {
             }
         )
 
-        if (checkMainImages.length > 0) {
+        if (checkMainImages.length > 0 && checkMainImages[0].image) {
             event.mainImage = checkMainImages[0].image
         } else {
             event.mainImage = 'https://source.unsplash.com/random'
