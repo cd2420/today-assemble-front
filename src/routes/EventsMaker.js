@@ -1,32 +1,29 @@
 import React, {useState, useEffect} from "react";
 import API from "../config/customAxios";
-import HEADER_SECTION from "../common/HeaderSection";
-import Header from "../component/Header";
-import Avatar from '@mui/material/Avatar';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
-import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
-import { getLocalStorageData, getAccountsDataByJwt } from "../common/Utils";
+import {ERROR_CODE} from "../common/GlobalConst";
+import { getLocalStorageData } from "../common/Utils";
 import { DateTimePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
-import TakeTime from "../component/TakeTime";
-import DaumMap from "../component/DaumMap";
+import { createTheme, CssBaseline, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, ThemeProvider } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import {useNavigate} from "react-router-dom";
+import Header from "../component/Header";
+import HEADER_SECTION from "../common/HeaderSection";
 import MainImageUpload from "../component/MainImageUpload";
+import DaumMap from "../component/DaumMap";
+import TakeTime from "../component/TakeTime";
 
 
 
-const Events = () => {
+const EventsMaker = () => {
 
+    const navigate = useNavigate();
     const [jwt, setJwt] = useState('')
 
     const [profileImg, setProfileImg] = useState([]);
@@ -54,6 +51,7 @@ const Events = () => {
             window.location.href ='/login';
         }
         validate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [eventName, _address])
 
     const validate = () => {
@@ -102,26 +100,9 @@ const Events = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const {address, longitude, latitude} = _address;
-        const req = {
-            name: eventName
-            , description
-            , maxMembers
-            , eventsType
-            , eventsTime
-            , takeTime
-            , address
-            , longitude
-            , latitude
-        }
-        let image = '';
-        if (profileImg.length > 0) {
-            image = profileImg[0].data_url;
-        }
-        req.eventsImagesSet = [{
-            imagesType: 'MAIN'
-            , image
-        }]
+        setIsLoading(true);
+        const req = makeReq();
+        
         try {
             const {data, status} = await API.post(
                 `/api/v1/events`
@@ -133,7 +114,7 @@ const Events = () => {
                 }
             )
             if (status === RESPONSE_STATUS.OK) {
-                console.log(data, status)
+                navigate(`/events/${data.id}`);
             }
 
         } catch(e) {
@@ -143,12 +124,36 @@ const Events = () => {
                 setEventsTimeError(true)
                 setEventsTimeErrorText(msg)
             }
+            setIsLoading(false);
         }
-        
-        
     }
 
-    
+    const makeReq = () => {
+        const {address, longitude, latitude} = _address;
+        let result = {
+            name: eventName
+            , description
+            , maxMembers
+            , eventsType
+            , eventsTime
+            , takeTime
+            , address
+            , longitude
+            , latitude
+        }
+
+        let image = '';
+        if (profileImg.length > 0) {
+            image = profileImg[0].data_url;
+        }
+        result.eventsImagesSet = [{
+            imagesType: 'MAIN'
+            , image
+        }]
+
+        return result;
+
+    }
 
     const theme = createTheme();
 
@@ -157,7 +162,7 @@ const Events = () => {
             <Container maxWidth="lg">
                 <CssBaseline />
                 <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
-                <Container component="main" maxWidth="xs">    
+                <Container component="main" maxWidth="xs">
                     <Box
                         sx={{
                             marginTop: 8,
@@ -271,9 +276,8 @@ const Events = () => {
                 </Container>
             </Container>
         </ThemeProvider>
-
+        
     );
-
 }
 
-export default Events;
+export default EventsMaker;
