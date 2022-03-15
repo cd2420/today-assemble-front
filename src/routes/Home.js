@@ -5,6 +5,7 @@ import { Container, createTheme, CssBaseline, Grid, ThemeProvider } from "@mui/m
 import Header from "../component/Header";
 import FeaturedPost from "../component/FeaturedPost";
 import moment from "moment";
+import { createMainImage } from "../common/Utils";
 
 
 const Home = () => {
@@ -26,30 +27,15 @@ const Home = () => {
     function printMainPage(data) {
         data.map(event => 
             {
-                event.key = data.id
-                createMainImage(event)
-                event.date = moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분')
-                return event
+                event.key = data.id;
+                createMainImage(event);
+                event.date = moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분');
+                return event;
             }
         )
         setEvents(data);
 
     }
-
-    function createMainImage(event) {
-        const checkMainImages = event.eventsImagesDtos.filter(
-            item => {
-                return item.imagesType === 'MAIN'
-            }
-        )
-
-        if (checkMainImages.length > 0 && checkMainImages[0].image) {
-            event.mainImage = checkMainImages[0].image
-        } else {
-            event.mainImage = 'https://source.unsplash.com/random'
-        }
-    }
-
 
     const theme = createTheme();
 

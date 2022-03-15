@@ -7,17 +7,19 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function FeaturedPost(props) {
+  const navigate = useNavigate();
   const { post } = props;
 
   useEffect(() => {
-    console.log(props)
+    
   }, [])
 
   return (
     <Grid item xs={12} md={6}>
-      <CardActionArea component="a" href="#">
+      <CardActionArea component="a" href="#" onClick={() => navigate(`/events/${post.id}`)}>
         <Card sx={{ display: 'flex' }}>
           <CardContent sx={{ flex: 1 }}>
             <Typography component="h2" variant="h5">
@@ -37,6 +39,7 @@ function FeaturedPost(props) {
                     <Button variant="contained">{tag.name}</Button>
                 ))}
             </div>
+            {/* 총 인원, 좋아요 */}
           </CardContent>
           <CardMedia
             component="img"
