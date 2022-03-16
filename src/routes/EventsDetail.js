@@ -7,6 +7,7 @@ import { LOCAL_STORAGE_CONST } from "../common/GlobalConst";
 import HEADER_SECTION from "../common/HeaderSection";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
 import { createMainImage } from "../common/Utils";
+import DaumMap from "../component/DaumMap";
 import Header from "../component/Header";
 import MainFeaturedPost from "../component/MainFeaturedPost";
 import API from "../config/customAxios";
@@ -16,6 +17,7 @@ const EventsDetail = () => {
     const params = useParams();
     const [event, setEvent] = useState(null);
     const [isHost, setIsHost] = useState(false);
+    const [address, setAddress] = useState({});
     useEffect(() => {
         
         const getEvent = async (eventId) => {
@@ -26,6 +28,12 @@ const EventsDetail = () => {
                     createMainImage(tmp_event);
                     tmp_event.subImage = data.eventsImagesDtos.filter((post) => {
                         return post.imagesType === '';
+                    })
+                    const {address, longitude, latitude} = tmp_event;
+                    setAddress({
+                        address
+                        , longitude
+                        , latitude
                     })
                     setEvent(tmp_event);
 
@@ -48,6 +56,7 @@ const EventsDetail = () => {
                 }
             } catch(e) {
                 console.log(e);
+                window.history.back();
             }
 
         }
@@ -98,6 +107,7 @@ const EventsDetail = () => {
                                     }
                                     
                                 </Box>
+                                <DaumMap address={address}/>
                             </Container>
                         )
                     }
