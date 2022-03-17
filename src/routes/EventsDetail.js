@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Button, CardMedia, Container, createTheme, CssBaseline, Grid } from "@mui/material";
+import { Button, CardMedia, Container, createTheme, CssBaseline, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
@@ -22,38 +22,47 @@ const EventsDetail = () => {
         
         const getEvent = async (eventId) => {
             try {
-                const {data}  = await API.get(`/api/v1/events/${eventId}`);
-                const tmp_event = data;
-                if (tmp_event) {
-                    createMainImage(tmp_event);
-                    tmp_event.subImage = data.eventsImagesDtos.filter((post) => {
-                        return post.imagesType === '';
-                    })
-                    const {address, longitude, latitude} = tmp_event;
-                    setAddress({
-                        address
-                        , longitude
-                        , latitude
-                    })
-                    setEvent(tmp_event);
-
-                    // 내가 만든 모임일 경우 사진 추가 버튼 보이게.
-                    const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
-                    if (jwt) {
-                        const {data, status}  = await API.get(
-                                        `/api/v1/accounts`
-                                        , {
-                                            headers : {
-                                                'Authorization': jwt
-                                            }
-                                        });
+                const {data, status}  = await API.get(`/api/v1/events/${eventId}`);
+                if (status === RESPONSE_STATUS.OK) {
+                    const tmp_event = data;
+                    if (tmp_event) {
+                        createMainImage(tmp_event);
+                        tmp_event.subImage = tmp_event.eventsImagesDtos.filter((post) => {
+                            return post.imagesType === '';
+                        })
+                        const {address, longitude, latitude} = tmp_event;
+                        setAddress({
+                            address
+                            , longitude
+                            , latitude
+                        });
+                        const {data, status}  = await API.get(`/api/v1/events/${eventId}/accounts`);
                         if (status === RESPONSE_STATUS.OK) {
-                            if (tmp_event.hostAccountsId === data.id) {
-                                setIsHost(true);
+                            tmp_event.nowMembers = data;
+                        } else {
+                            tmp_event.nowMembers = 0;
+                        }
+                        setEvent(tmp_event);
+
+                        // 내가 만든 모임일 경우 사진 추가 버튼 보이게.
+                        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+                        if (jwt) {
+                            const {data, status}  = await API.get(
+                                            `/api/v1/accounts`
+                                            , {
+                                                headers : {
+                                                    'Authorization': jwt
+                                                }
+                                            });
+                            if (status === RESPONSE_STATUS.OK) {
+                                if (tmp_event.hostAccountsId === data.id) {
+                                    setIsHost(true);
+                                }
                             }
                         }
                     }
                 }
+                
             } catch(e) {
                 console.log(e);
                 window.history.back();
@@ -107,7 +116,40 @@ const EventsDetail = () => {
                                     }
                                     
                                 </Box>
-                                <DaumMap address={address}/>
+                                <Grid container spacing={2} >
+                                    <Grid 
+                                        item
+                                        xs={4}
+                                    >
+                                        <Box 
+                                           xs={{
+                                            display: 'flex',
+                                            alignItems: 'space-evenly',
+                                            flexDirection: 'column',
+                                            p: 1,
+                                            m: 1,
+                                            borderRadius: 1,
+                                          }}
+                                        >
+                                            <Box>
+                                                시작 시간 : {event.eventsTime}
+                                            </Box>
+                                            <Box >
+                                                종료 시간 : {event.takeTime}
+                                            </Box>
+                                            <Box >
+                                                참여인원 : {event.nowMembers} / {event.maxMembers}
+                                            </Box>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <DaumMap address={address}/>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <DaumMap address={address}/>
+                                    </Grid>
+                                </Grid>
+                                
                             </Container>
                         )
                     }
