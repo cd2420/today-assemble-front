@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@emotion/react";
 import { Button, CardMedia, Container, createTheme, CssBaseline, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import moment from "moment";
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { LOCAL_STORAGE_CONST } from "../common/GlobalConst";
@@ -73,7 +74,15 @@ const EventsDetail = () => {
             getEvent(params.events_id)
         }
     }, [])
+
+    const showEndTime = () => {
+        const end = new Date(moment(event.eventsTime).format('YYYY-MM-DD hh:mm'));
+        end.setHours(end.getHours() + event.takeTime);
+        return moment(end).format('YYYY-MM-DD HH시 mm분');
+    }
+
     const theme = createTheme();
+
     return (
         <ThemeProvider theme={theme}>
             <Container maxWidth="lg">
@@ -132,10 +141,10 @@ const EventsDetail = () => {
                                           }}
                                         >
                                             <Box>
-                                                시작 시간 : {event.eventsTime}
+                                                시작 시간 : {moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분')}
                                             </Box>
                                             <Box >
-                                                종료 시간 : {event.takeTime}
+                                                종료 시간 : {showEndTime()}
                                             </Box>
                                             <Box >
                                                 참여인원 : {event.nowMembers} / {event.maxMembers}
@@ -155,7 +164,6 @@ const EventsDetail = () => {
                     }
             </Container>
         </ThemeProvider>
-
     )
 }
 
