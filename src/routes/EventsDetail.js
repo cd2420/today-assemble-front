@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Button, CardMedia, Container, createTheme, CssBaseline, Grid, Typography } from "@mui/material";
+import { Button, ButtonGroup, CardMedia, Container, createTheme, CssBaseline, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import moment from "moment";
 import React, { useEffect, useState } from "react"
@@ -81,6 +81,11 @@ const EventsDetail = () => {
         return moment(end).format('YYYY-MM-DD HH시 mm분');
     }
 
+    const likes = (e) => {
+        e.preventDefault();
+
+    }
+
     const theme = createTheme();
 
     return (
@@ -130,35 +135,82 @@ const EventsDetail = () => {
                                         item
                                         xs={4}
                                     >
+                                        <Typography>
+                                            모임 일정
+                                        </Typography>
                                         <Box 
-                                           xs={{
+                                           sx={{
                                             display: 'flex',
                                             alignItems: 'space-evenly',
                                             flexDirection: 'column',
                                             p: 1,
-                                            m: 1,
-                                            borderRadius: 1,
+                                            m: 1
                                           }}
                                         >
-                                            <Box>
+                                            <Typography>
                                                 시작 시간 : {moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분')}
-                                            </Box>
-                                            <Box >
+                                            </Typography>
+                                            <Typography >
                                                 종료 시간 : {showEndTime()}
-                                            </Box>
-                                            <Box >
+                                            </Typography>
+                                            <Typography >
                                                 참여인원 : {event.nowMembers} / {event.maxMembers}
-                                            </Box>
+                                            </Typography>
                                         </Box>
                                     </Grid>
                                     <Grid item xs={4}>
+                                        <Typography>
+                                            주소: {address.address}
+                                        </Typography>
                                         <DaumMap address={address}/>
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <DaumMap address={address}/>
+                                        <Typography>
+                                            태그
+                                        </Typography>
                                     </Grid>
                                 </Grid>
-                                
+                                <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    '& > *': {
+                                    m: 3,
+                                    },
+                                }}
+                                >
+                                    <ButtonGroup 
+                                        fullWidth
+                                        variant="text" 
+                                        aria-label="text button group"
+                                    >
+                                        <Button 
+                                            key="1" 
+                                            variant="outlined"
+                                            onClick={likes}
+                                        >
+                                            좋아요
+                                        </Button>
+                                        <Button 
+                                            key="2" 
+                                            variant="outlined">
+                                                모임참가
+                                        </Button>
+                                        {
+                                            isHost 
+                                            && 
+                                            <Button
+                                                key="3" 
+                                                variant="outlined" 
+                                            >
+                                                수정
+                                            </Button>
+
+                                        }
+                                        
+                                    </ButtonGroup>
+                                </Box>
                             </Container>
                         )
                     }

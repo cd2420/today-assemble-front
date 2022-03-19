@@ -79,7 +79,12 @@ const DaumMap = ({onChange, address}) => {
 
     return (
         <div>
-            <input type="text" id="sample5_address"  placeholder="주소" value={address ? address.address : ''} disabled={address ? true : false}/>
+            <input 
+                type="text" 
+                id="sample5_address"  
+                placeholder="주소" 
+                style={{display: isMakePage }}
+            />
             <input 
                 type="button" 
                 onClick={sample5_execDaumPostcode} 
