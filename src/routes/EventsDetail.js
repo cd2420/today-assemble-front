@@ -37,15 +37,10 @@ const EventsDetail = () => {
                             , longitude
                             , latitude
                         });
-                        const {data, status}  = await API.get(`/api/v1/events/${eventId}/accounts`);
-                        if (status === RESPONSE_STATUS.OK) {
-                            tmp_event.nowMembers = data;
-                        } else {
-                            tmp_event.nowMembers = 0;
-                        }
-                        setEvent(tmp_event);
-
+                        
                         // 내가 만든 모임일 경우 사진 추가 버튼 보이게.
+                        // 내가 참여중인 모임인지 체크
+                        // 내가 좋아요 누른 모임인지 체크
                         const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
                         if (jwt) {
                             const {data, status}  = await API.get(
@@ -59,8 +54,22 @@ const EventsDetail = () => {
                                 if (tmp_event.hostAccountsId === data.id) {
                                     setIsHost(true);
                                 }
+
+                                if (data.likesDtos) {
+                                    if (data.likesDtos.filter(likesDto => likesDto.eventsDto.id === tmp_event.id).length > 0) {
+                                        tmp_event.isLikes = true;
+                                    }
+                                }
+
+                                if (data.eventsDtos) {
+                                    if (data.eventsDtos.filter(eventsDto => eventsDto.id === tmp_event.id).length  > 0) {
+                                        tmp_event.isParticipate = true;
+                                    }
+                                }
                             }
                         }
+                        
+                        setEvent(tmp_event);
                     }
                 }
                 
@@ -187,15 +196,17 @@ const EventsDetail = () => {
                                     >
                                         <Button 
                                             key="1" 
-                                            variant="outlined"
+                                            variant={event.isLikes ? "contained" : "outlined"}
                                             onClick={likes}
                                         >
-                                            좋아요
+                                            좋아요 ({event.likesDtos ? event.likesDtos.length : 0 })
                                         </Button>
                                         <Button 
                                             key="2" 
-                                            variant="outlined">
-                                                모임참가
+                                            variant={event.isParticipate ? "contained" : "outlined"}
+                                            color={event.isParticipate ? "error" : "primary"}
+                                        >
+                                            {event.isParticipate ? "참가취소" : "모임참가"}
                                         </Button>
                                         {
                                             isHost 
