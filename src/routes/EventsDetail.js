@@ -21,68 +21,77 @@ const EventsDetail = () => {
     const [address, setAddress] = useState({});
     useEffect(() => {
         
-        const getEvent = async (eventId) => {
-            try {
-                const {data, status}  = await API.get(`/api/v1/events/${eventId}`);
-                if (status === RESPONSE_STATUS.OK) {
-                    const tmp_event = data;
-                    if (tmp_event) {
-                        createMainImage(tmp_event);
-                        tmp_event.subImage = tmp_event.eventsImagesDtos.filter((post) => {
-                            return post.imagesType === '';
-                        })
-                        const {address, longitude, latitude} = tmp_event;
-                        setAddress({
-                            address
-                            , longitude
-                            , latitude
-                        });
-                        
-                        // 내가 만든 모임일 경우 사진 추가 버튼 보이게.
-                        // 내가 참여중인 모임인지 체크
-                        // 내가 좋아요 누른 모임인지 체크
-                        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
-                        if (jwt) {
-                            const {data, status}  = await API.get(
-                                            `/api/v1/accounts`
-                                            , {
-                                                headers : {
-                                                    'Authorization': jwt
-                                                }
-                                            });
-                            if (status === RESPONSE_STATUS.OK) {
-                                if (tmp_event.hostAccountsId === data.id) {
-                                    setIsHost(true);
-                                }
-
-                                if (data.likesDtos) {
-                                    if (data.likesDtos.filter(likesDto => likesDto.eventsDto.id === tmp_event.id).length > 0) {
-                                        tmp_event.isLikes = true;
-                                    }
-                                }
-
-                                if (data.eventsDtos) {
-                                    if (data.eventsDtos.filter(eventsDto => eventsDto.id === tmp_event.id).length  > 0) {
-                                        tmp_event.isParticipate = true;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        setEvent(tmp_event);
-                    }
-                }
-                
-            } catch(e) {
-                console.log(e);
-                window.history.back();
-            }
-
-        }
         if (params.events_id) {
             getEvent(params.events_id)
         }
     }, [])
+
+    const getEvent = async (eventId) => {
+        try {
+            const {data, status}  = await API.get(`/api/v1/events/${eventId}`);
+            if (status === RESPONSE_STATUS.OK) {
+                if (data) {
+                    settingImageAndAddress(data);
+                    
+                    // 내가 만든 모임일 경우 사진 추가 버튼 보이게.
+                    // 내가 참여중인 모임인지 체크
+                    // 내가 좋아요 누른 모임인지 체크
+                    await checkThisEventWithAccount(data);
+                    setEvent(data);
+                }
+            }
+            
+        } catch(e) {
+            console.log(e);
+            window.history.back();
+        }
+
+    }
+
+    const settingImageAndAddress = (data) => {
+        createMainImage(data);
+        data.subImage = data.eventsImagesDtos.filter((post) => {
+            return post.imagesType === 'SUB';
+        })
+        const {address, longitude, latitude} = data;
+        setAddress({
+            address
+            , longitude
+            , latitude
+        });
+
+    }
+
+    const checkThisEventWithAccount = async (event_data) => {
+        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+        if (jwt) {
+            const {data, status}  = await API.get(
+                            `/api/v1/accounts`
+                            , {
+                                headers : {
+                                    'Authorization': jwt
+                                }
+                            });
+            if (status === RESPONSE_STATUS.OK) {
+                if (event_data.hostAccountsId === data.id) {
+                    setIsHost(true);
+                }
+
+                if (data.likesDtos) {
+                    if (data.likesDtos.filter(likesDto => likesDto.eventsDto.id === event_data.id).length > 0) {
+                        event_data.isLikes = true;
+                    }
+                }
+
+                if (data.eventsDtos) {
+                    if (data.eventsDtos.filter(eventsDto => eventsDto.id === event_data.id).length  > 0) {
+                        event_data.isParticipate = true;
+                    }
+                }
+            }
+        }
+
+    }
 
     const showEndTime = () => {
         const end = new Date(moment(event.eventsTime).format('YYYY-MM-DD hh:mm'));
@@ -90,9 +99,29 @@ const EventsDetail = () => {
         return moment(end).format('YYYY-MM-DD HH시 mm분');
     }
 
-    const likes = (e) => {
+    const likes = async (e) => {
         e.preventDefault();
+        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+        if (jwt) {
+            const {data, status}  = await API.post(
+                            `/api/v1/accounts/likes/events/${event.id}`
+                            , JSON.stringify("") // 이거 없으면 서버에서 header값을 못받음... 그 이유는??
+                            , {
+                                headers : {
+                                    'Authorization': jwt
+                                }
+                            });
+            if (status === RESPONSE_STATUS.OK) {
+                settingImageAndAddress(data);
+                await checkThisEventWithAccount(data);
+                setEvent(data);
+            }
+        }
+    }
 
+    const participateEventsManage = (e) => {
+        e.preventDefault();
+        // 호스트일경우 모임을 삭제할것인지 물어보기
     }
 
     const theme = createTheme();
@@ -199,14 +228,15 @@ const EventsDetail = () => {
                                             variant={event.isLikes ? "contained" : "outlined"}
                                             onClick={likes}
                                         >
-                                            좋아요 ({event.likesDtos ? event.likesDtos.length : 0 })
+                                            좋아요 ({event.likesAccountsDtos ? event.likesAccountsDtos.length : 0 })
                                         </Button>
                                         <Button 
                                             key="2" 
                                             variant={event.isParticipate ? "contained" : "outlined"}
                                             color={event.isParticipate ? "error" : "primary"}
+                                            onClick={participateEventsManage}
                                         >
-                                            {event.isParticipate ? "참가취소" : "모임참가"}
+                                            { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
                                         </Button>
                                         {
                                             isHost 
