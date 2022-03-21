@@ -102,26 +102,52 @@ const EventsDetail = () => {
     const likes = async (e) => {
         e.preventDefault();
         const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
-        if (jwt) {
-            const {data, status}  = await API.post(
-                            `/api/v1/accounts/likes/events/${event.id}`
-                            , JSON.stringify("") // 이거 없으면 서버에서 header값을 못받음... 그 이유는??
-                            , {
-                                headers : {
-                                    'Authorization': jwt
-                                }
-                            });
-            if (status === RESPONSE_STATUS.OK) {
-                settingImageAndAddress(data);
-                await checkThisEventWithAccount(data);
-                setEvent(data);
+        try {
+            if (jwt) {
+                const {data, status}  = await API.post(
+                                `/api/v1/accounts/likes/events/${event.id}`
+                                , JSON.stringify("") // 이거 없으면 서버에서 header값을 못받음... 그 이유는??
+                                , {
+                                    headers : {
+                                        'Authorization': jwt
+                                    }
+                                });
+                if (status === RESPONSE_STATUS.OK) {
+                    settingImageAndAddress(data);
+                    await checkThisEventWithAccount(data);
+                    setEvent(data);
+                }
             }
+        } catch (e) {
+            console.log(e);
         }
+        
     }
 
-    const participateEventsManage = (e) => {
+    const participateEventsManage = async (e) => {
         e.preventDefault();
         // 호스트일경우 모임을 삭제할것인지 물어보기
+        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+        try {
+            if (jwt) {
+                const {data, status}  = await API.post(
+                                `/api/v1/events/${event.id}/accounts`
+                                , JSON.stringify("") // 이거 없으면 서버에서 header값을 못받음... 그 이유는??
+                                , {
+                                    headers : {
+                                        'Authorization': jwt
+                                    }
+                                });
+                if (status === RESPONSE_STATUS.OK) {
+                    settingImageAndAddress(data.returnDto);
+                    await checkThisEventWithAccount(data.returnDto);
+                    setEvent(data.returnDto);
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        
     }
 
     const theme = createTheme();
@@ -235,6 +261,7 @@ const EventsDetail = () => {
                                             variant={event.isParticipate ? "contained" : "outlined"}
                                             color={event.isParticipate ? "error" : "primary"}
                                             onClick={participateEventsManage}
+                                            disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
                                         >
                                             { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
                                         </Button>
