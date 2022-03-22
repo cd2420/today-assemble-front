@@ -1,9 +1,9 @@
 import { ThemeProvider } from "@emotion/react";
-import { Button, ButtonGroup, CardMedia, Container, createTheme, CssBaseline, Grid, Typography } from "@mui/material";
+import { Button, ButtonGroup, CardMedia, Container, createTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import moment from "moment";
 import React, { useEffect, useState } from "react"
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LOCAL_STORAGE_CONST } from "../common/GlobalConst";
 import HEADER_SECTION from "../common/HeaderSection";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
@@ -16,9 +16,13 @@ import API from "../config/customAxios";
 
 const EventsDetail = () => {
     const params = useParams();
+    const navigate = useNavigate();
+
     const [event, setEvent] = useState(null);
     const [isHost, setIsHost] = useState(false);
     const [address, setAddress] = useState({});
+    const [dialogOpen, setDialogOpen] = useState(false);
+
     useEffect(() => {
         
         if (params.events_id) {
@@ -126,7 +130,6 @@ const EventsDetail = () => {
 
     const participateEventsManage = async (e) => {
         e.preventDefault();
-        // 호스트일경우 모임을 삭제할것인지 물어보기
         const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
         try {
             if (jwt) {
@@ -147,8 +150,24 @@ const EventsDetail = () => {
         } catch (e) {
             console.log(e);
         }
-        
     }
+
+    const handleClickOpen = (e) => {
+        e.preventDefault();
+        setDialogOpen(true);
+    }
+
+    const handleClose = (e) => {
+        e.preventDefault();
+        setDialogOpen(false);
+    }
+
+    const removeEvents = async (e) => {
+        await participateEventsManage(e);
+        navigate('/home');
+    }
+
+    
 
     const theme = createTheme();
 
@@ -260,11 +279,27 @@ const EventsDetail = () => {
                                             key="2" 
                                             variant={event.isParticipate ? "contained" : "outlined"}
                                             color={event.isParticipate ? "error" : "primary"}
-                                            onClick={participateEventsManage}
+                                            onClick={isHost ? handleClickOpen : participateEventsManage}
                                             disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
                                         >
                                             { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
                                         </Button>
+                                        <Dialog onClose={handleClose} open={dialogOpen}>
+                                            <DialogTitle onClose={handleClose}>
+                                                모임 삭제
+                                            </DialogTitle>
+                                            <DialogContent>
+                                                <Typography gutterBottom>
+                                                    정말로 모임을 삭제 하시겠습니까?
+                                                </Typography>
+                                            </DialogContent>
+
+                                            <DialogActions>
+                                                <Button variant="contained" color="error" onClick={removeEvents}>삭제</Button>
+                                                <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
+                                            </DialogActions>
+                                        </Dialog>
+
                                         {
                                             isHost 
                                             && 

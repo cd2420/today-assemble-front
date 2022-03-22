@@ -48,7 +48,7 @@ const EventsMaker = () => {
         if (_jwt && is_ok) {
             setJwt(_jwt);
         } else {
-            window.location.href ='/login';
+            navigate('/login');
         }
         validate()
     // eslint-disable-next-line react-hooks/exhaustive-deps
