@@ -115,7 +115,7 @@ export function validatePassword(val, check_val, setPasswordError, setPasswordEr
     setUpdateButton(false)
 }
 
-export function createMainImage(event) {
+export function createEventMainImage(event) {
     const checkMainImages = event.eventsImagesDtos.filter(
         item => {
             return item.imagesType === 'MAIN'
@@ -127,4 +127,12 @@ export function createMainImage(event) {
     } else {
         event.mainImage = 'https://source.unsplash.com/random'
     }
+}
+
+export function createEventSubImage(event) {
+    event.subImage = event.eventsImagesDtos.filter(
+        item => {
+            return item.imagesType === 'SUB'
+        }
+    )
 }

@@ -197,6 +197,7 @@ const EventsMaker = () => {
                                 <Grid item xs={12}>
                                     <TextField
                                         fullWidth
+                                        multiline
                                         id="description"
                                         label="모임 설명"
                                         name="description"

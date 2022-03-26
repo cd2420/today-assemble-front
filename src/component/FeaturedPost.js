@@ -19,7 +19,7 @@ function FeaturedPost(props) {
 
   return (
     <Grid item xs={12} md={6}>
-      <CardActionArea component="a" href="#" onClick={() => navigate(`/events/${post.id}`)}>
+      <CardActionArea component="a" href="" onClick={() => navigate(`/events/${post.id}`)}>
         <Card sx={{ display: 'flex' }}>
           <CardContent sx={{ flex: 1 }}>
             <Typography component="h2" variant="h5">

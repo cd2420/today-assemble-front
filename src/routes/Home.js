@@ -5,7 +5,7 @@ import { Container, createTheme, CssBaseline, Grid, ThemeProvider } from "@mui/m
 import Header from "../component/Header";
 import FeaturedPost from "../component/FeaturedPost";
 import moment from "moment";
-import { createMainImage } from "../common/Utils";
+import { createEventMainImage } from "../common/Utils";
 
 
 const Home = () => {
@@ -28,7 +28,7 @@ const Home = () => {
         data.map(event => 
             {
                 event.key = data.id;
-                createMainImage(event);
+                createEventMainImage(event);
                 event.date = moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분');
                 return event;
             }

@@ -1,9 +1,9 @@
-import { Grid, Pagination, Stack } from '@mui/material';
+import { Grid, Pagination } from '@mui/material';
 import { Box } from '@mui/system';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { RESPONSE_STATUS } from '../common/ResponseStatus';
-import { createMainImage } from '../common/Utils';
+import { createEventMainImage } from '../common/Utils';
 import API from '../config/customAxios';
 import FeaturedPost from './FeaturedPost';
 
@@ -50,7 +50,7 @@ const PaginatedItems = ({ itemsPerPage }) => {
       data.map(event => 
           {
               event.key = data.id;
-              createMainImage(event);
+              createEventMainImage(event);
               event.date = moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분');
               return event;
           }
