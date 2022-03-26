@@ -7,12 +7,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { LOCAL_STORAGE_CONST } from "../common/GlobalConst";
 import HEADER_SECTION from "../common/HeaderSection";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
-import { createMainImage } from "../common/Utils";
+import { createEventMainImage, createEventSubImage } from "../common/Utils";
 import DaumMap from "../component/DaumMap";
 import Header from "../component/Header";
 import MainFeaturedPost from "../component/MainFeaturedPost";
+import SubImageUpload from "../component/SubImageUpload";
 import API from "../config/customAxios";
-
+import _ from 'lodash';
 
 const EventsDetail = () => {
     const params = useParams();
@@ -46,17 +47,18 @@ const EventsDetail = () => {
             }
             
         } catch(e) {
-            console.log(e);
+            console.log(e);            
+            if (e.response.data && e.response.data.indexOf('ExpiredJwtException') > -1) {
+                // JWT 토큰 만료체크
+            }
             window.history.back();
         }
 
     }
 
     const settingImageAndAddress = (data) => {
-        createMainImage(data);
-        data.subImage = data.eventsImagesDtos.filter((post) => {
-            return post.imagesType === 'SUB';
-        })
+        createEventMainImage(data);
+        createEventSubImage(data);
         const {address, longitude, latitude} = data;
         setAddress({
             address
@@ -95,6 +97,44 @@ const EventsDetail = () => {
             }
         }
 
+    }
+
+    const upload = async (imageList, addUpdateIndex) => {
+        const req = {
+            id: event.id
+            , accountsId: event.hostAccountsId
+            , images : _.cloneDeep(event.eventsImagesDtos)
+        }
+        
+        if (imageList.length > 0) {
+            imageList.forEach(element => {
+                req.images.push({
+                    imagesType : 'SUB'
+                    , image : element.data_url
+                })
+            });
+            const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+            try {
+                const {data, status} = await API.put(`/api/v1/events/images`
+                                                , JSON.stringify(req)
+                                                , {
+                                                    headers : {
+                                                        'Authorization': jwt
+                                                    }
+                                                });
+                if (status === RESPONSE_STATUS.OK) {
+                    settingImageAndAddress(data);
+                    await checkThisEventWithAccount(data);
+                    setEvent(data);
+                }
+
+            } catch (e) {
+                console.log(e);
+            }
+            
+            
+        }
+        
     }
 
     const showEndTime = () => {
@@ -192,8 +232,9 @@ const EventsDetail = () => {
                                         overflowY: "hidden" // added scroll
                                     }}
                                 >
-                                    {event.subImage.map(subImage => (
+                                    {event.subImage.map((subImage, idx) => (
                                         <CardMedia
+                                            key = {idx}
                                             component="img"
                                             sx={{ width: 160, m: 1, display: { xs: 'inline' } }}
                                             image={subImage.image}
@@ -206,9 +247,10 @@ const EventsDetail = () => {
                                     {
                                         isHost && 
                                         (
-                                            <Button sx={{ width: 160, m:1, border: '1px dashed grey' }} >
-                                                사진 추가
-                                            </Button>
+                                            // <Button sx={{ width: 160, m:1, border: '1px dashed grey' }} >
+                                            //     사진 추가
+                                            // </Button>
+                                            <SubImageUpload upload={upload} profileImg={[]} />
                                         )
                                     }
                                     
@@ -254,14 +296,14 @@ const EventsDetail = () => {
                                     </Grid>
                                 </Grid>
                                 <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    '& > *': {
-                                    m: 3,
-                                    },
-                                }}
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        '& > *': {
+                                        m: 3,
+                                        },
+                                    }}
                                 >
                                     <ButtonGroup 
                                         fullWidth
