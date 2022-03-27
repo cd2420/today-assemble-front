@@ -15,12 +15,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
 import {LOCAL_STORAGE_CONST} from "../common/GlobalConst";
-import { getLocalStorageData, getAccountsDataByJwt } from "../common/Utils";
+import { getLocalStorageData } from "../common/Utils";
 import { LoadingButton } from "@mui/lab";
+import { useNavigate } from "react-router-dom";
 
 
 
 const Login = () => {
+    const navigate = useNavigate();
 
     const [formLogin, setFormLogin] = useState(true);
     const [loginButton, setSignUpButton] = useState(false);
@@ -32,56 +34,52 @@ const Login = () => {
     useEffect(() => {
         const {is_ok} = getLocalStorageData();
         if (is_ok) {
-            window.history.back()
+            navigate(-1);
         }
     }, [])
 
     const changeLoginType = () => {
-        setFormLogin(!formLogin)
+        setFormLogin(!formLogin);
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setSignUpButton(true)
-        setIsLoading(true)
+        setSignUpButton(true);
+        setIsLoading(true);
         try {
             const formData = new FormData(event.currentTarget);
             const accounts = {
               email: formData.get('email'),
               password: formData.get('password')
             };
-            let url = "/login"
+            let url = "/login";
             if (!formLogin) {
-                url = "/api/v1/accounts" + url
+                url = "/api/v1/accounts" + url;
             }
-            const {headers, status} = await API.post(url, JSON.stringify(accounts))
+            const {headers, status} = await API.post(url, JSON.stringify(accounts));
 
             if (formLogin) {
                 if (status === RESPONSE_STATUS.OK) {
-                    const {data, status} = await getAccountsDataByJwt(headers.authorization)
-                    if (status === RESPONSE_STATUS.OK) {
-                        localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
-                        localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
-                        window.history.back();
-                    }
+                    localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
+                    navigate(-1);
                 }
             } else {
-                setError(true)
-                setErrorMsg('이메일을 확인하세요.')
-                setSignUpButton(false)
-                setIsLoading(false)
+                setError(true);
+                setErrorMsg('이메일을 확인하세요.');
+                setSignUpButton(false);
+                setIsLoading(false);
             }
         } catch (e) {
             setErrorMsg('아이디 혹은 비밀번호가 잘못되었습니다.');
             setError(true);
-            setSignUpButton(false)
-            setIsLoading(false)
+            setSignUpButton(false);
+            setIsLoading(false);
         }
     };
 
     const handleTextClick = () => {
-        setErrorMsg('')
-        setError(false)
+        setErrorMsg('');
+        setError(false);
     }
 
     const theme = createTheme();

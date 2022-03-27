@@ -4,13 +4,17 @@ import Header from "../component/Header";
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getLocalStorageData } from "../common/Utils";
+import { getAccountsDataByJwt, getLocalStorageData } from "../common/Utils";
 import { Box, Button, ButtonGroup, Grid} from "@mui/material";
 
 import Profile from "../component/Profile";
 import PasswordPage from "../component/PasswordPage";
+import { RESPONSE_STATUS } from "../common/ResponseStatus";
+import { useNavigate } from "react-router-dom";
 
 const Setting = () => {
+
+    const navigate = useNavigate();
 
     const [accounts, setAccounts] = useState(null);
     const [jwt, setJwt] = useState('');
@@ -20,16 +24,23 @@ const Setting = () => {
     const [likeEventsPage, setLikeEventsPage] = useState(false);
 
     useEffect(() => {
-        const {_accounts, _jwt, is_ok } = getLocalStorageData()
+        const {_jwt, is_ok } = getLocalStorageData();
         if (is_ok) {
-            setJwt(_jwt)
-            const tmp_accounts = JSON.parse(_accounts)
-            tmp_accounts.birth = new Date(tmp_accounts.birth)
-            setAccounts(tmp_accounts)
+            dataInit(_jwt);
+            
         } else {
-            window.location.href='/login'
+            navigate('/login');
         }
     }, [])
+
+    const dataInit = async (_jwt) => {
+        const {data, status} = await getAccountsDataByJwt(_jwt);
+        if (status === RESPONSE_STATUS.OK) {
+            setJwt(_jwt);
+            data.birth = new Date(data.birth);
+            setAccounts(data);
+        }
+    }
 
     const changePage = (e) => {
         e.preventDefault();

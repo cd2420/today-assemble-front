@@ -16,6 +16,7 @@ import API from "../config/customAxios";
 import _ from 'lodash';
 
 const EventsDetail = () => {
+    
     const params = useParams();
     const navigate = useNavigate();
 
@@ -29,6 +30,7 @@ const EventsDetail = () => {
         if (params.events_id) {
             getEvent(params.events_id)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const getEvent = async (eventId) => {
@@ -47,11 +49,8 @@ const EventsDetail = () => {
             }
             
         } catch(e) {
-            console.log(e);            
-            if (e.response.data && e.response.data.indexOf('ExpiredJwtException') > -1) {
-                // JWT 토큰 만료체크
-            }
-            window.history.back();
+            console.log(e);
+            navigate(-1);
         }
 
     }

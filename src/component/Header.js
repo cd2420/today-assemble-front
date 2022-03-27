@@ -9,22 +9,25 @@ import Link from '@mui/material/Link';
 import {LOCAL_STORAGE_CONST} from '../common/GlobalConst';
 import API from '../config/customAxios';
 import {RESPONSE_STATUS} from '../common/ResponseStatus';
-import { getLocalStorageData } from '../common/Utils';
+import { getAccountsDataByJwt, getLocalStorageData } from '../common/Utils';
 import { ButtonGroup, Menu, MenuItem } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import QueryString from 'qs';
+import { useNavigate } from 'react-router-dom';
 
 function Header(props) {
   const {sections, title} = props;
 
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const [isAuthorized, setIsAuthorized] = useState(false)
-  const [jwt, setJwt] = useState('')
-  const [accounts, setAccounts] = useState(null)
-
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [jwt, setJwt] = useState('');
+  const [accounts, setAccounts] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -33,61 +36,78 @@ function Header(props) {
   };
 
   useEffect(() => {
-    const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true })
+    const queryData = QueryString.parse(location.search, { ignoreQueryPrefix: true });
     const {token, email, type} = queryData;
     if (token && email && type) {
       
       if (type === LOCAL_STORAGE_CONST.EMAIL_LOGIN) {
-        emailAPI(email, token, 'login-email-token')
+        emailAPI(email, token, 'login-email-token');
       } else if(type === LOCAL_STORAGE_CONST.EMAIL_VERIFY) {
-        emailAPI(email, token, 'check-email-token')
-      }
-
-      async function emailAPI(email, token, url) {
-        const {data, headers, status} = await API.get(`/api/v1/email/${url}?email=${email}&token=${token}`)
-        if (status) {
-          setAccounts(data)
-          localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data))
-          setJwt(headers.authorization)
-          setIsAuthorized(true)
-        }
+        emailAPI(email, token, 'check-email-token');
       }
 
     } else {
 
-      let {_jwt, _accounts, is_ok} = getLocalStorageData();
-      if (is_ok) {
-
-        if (_jwt && _accounts) {
-          let tmp_accounts = JSON.parse(_accounts)
-          setAccounts(tmp_accounts)
-          setJwt(_jwt)
-          setIsAuthorized(true)
-        }
+      let {_jwt, is_ok} = getLocalStorageData();
+      if (is_ok && _jwt) {
+          getAccounts(_jwt);
       }
-
     }
 
   }, [])
 
+  const emailAPI = async (email, token, url) => {
+    const {data, headers, status} = await API.get(`/api/v1/email/${url}?email=${email}&token=${token}`);
+    if (status) {
+      setAccounts(data);
+      setJwt(headers.authorization);
+      setIsAuthorized(true);
+    }
+  }
+
+  const getAccounts = async (_jwt) => {
+    try {
+      const {data, status} = await getAccountsDataByJwt(_jwt);
+
+      if (status === RESPONSE_STATUS.OK) {
+        setAccounts(data);
+        setJwt(_jwt);
+        setIsAuthorized(true);
+      }
+    } catch(e) {
+      console.log(e);
+      if (e.response.data && e.response.data.indexOf('ExpiredJwtException') > -1) {
+        // JWT 토큰 만료
+        dataInit();
+        navigate('/login');
+      }
+    }
+  }
+
   const priflePage = () => {
-    window.location.href='/setting'
+    navigate('/setting');
   }
 
   const logout = async () => {
-    const {status} = await API.post("/logout", {
-      headers : {
-        'Authorization': jwt
-      }
-    })
+    const {status} = await API.post("/logout"
+                                    , {
+                                      headers : {
+                                        'Authorization': jwt
+                                      }
+                                    });
+
     if (status === RESPONSE_STATUS.OK) {
-      localStorage.removeItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
-      localStorage.removeItem(LOCAL_STORAGE_CONST.ACCOUNTS)
-      setIsAuthorized(false)
-      setJwt('')
-      setAccounts(null)
-      window.location.href='/home'
+      dataInit();
+      navigate('/home');
     }
+  }
+
+  const dataInit = () => {
+    localStorage.removeItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+    setIsAuthorized(false);
+    setJwt('');
+    setAccounts(null);
+
   }
 
   return (

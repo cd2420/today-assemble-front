@@ -9,9 +9,12 @@ import DateComponent from "../component/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import { getAge, getLocalStorageData, validatePassword, validateUserName } from "../common/Utils";
 import { LoadingButton } from "@mui/lab";
+import { useNavigate } from "react-router-dom";
 
 
 const SignUp = () => {
+
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
@@ -35,9 +38,9 @@ const SignUp = () => {
     useEffect(() => {
         const {is_ok} = getLocalStorageData();
         if (is_ok) {
-            window.history.back()
+            navigate(-1);
         }
-        validate()
+        validate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [email, password, passwordCheck, userName, gender, birth])
 
@@ -52,9 +55,9 @@ const SignUp = () => {
             && !passwordError
             && !userNameError
             ) {
-                setSignUpButton(false)
+                setSignUpButton(false);
         } else {
-            setSignUpButton(true)
+            setSignUpButton(true);
         }
     }
 
@@ -74,17 +77,17 @@ const SignUp = () => {
         } else if(name ==="date") {
             setBirth(value);
         }
-        validateProps(name,value)
+        validateProps(name,value);
         
     };
 
     const validateProps = (name,value) => {
         if(name === "email") {
-            validateEmail(value)
+            validateEmail(value);
         } else if(name ==="password") {
-            validatePassword(value, passwordCheck, setPasswordError, setPasswordErrorText, (check) => {})
+            validatePassword(value, passwordCheck, setPasswordError, setPasswordErrorText, (check) => {});
         } else if(name ==="password-check") {
-            validatePassword(value, password, setPasswordError, setPasswordErrorText, (check) => {})
+            validatePassword(value, password, setPasswordError, setPasswordErrorText, (check) => {});
         } else if(name ==="userName") {
             validateUserName(value, setUserNameError, setUserNameErrorText, (check) => {});
         }
@@ -93,15 +96,15 @@ const SignUp = () => {
     const validateEmail = (val) => {
         const regEmail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
 
-        setEmailError(false)
-        setEmailErrorText('')
+        setEmailError(false);
+        setEmailErrorText('');
         if (val === '') {
             return
         }
 
         if (!regEmail.test(val)) {
-            setEmailError(true)
-            setEmailErrorText('잘못된 이메일 형식입니다.')
+            setEmailError(true);
+            setEmailErrorText('잘못된 이메일 형식입니다.');
             return 
         }
         
@@ -109,27 +112,26 @@ const SignUp = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setIsLoading(true)
+        setIsLoading(true);
         try {
-            const accounts = getAccounts()
-            const {data, status, headers} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts))
+            const accounts = getAccounts();
+            const {status, headers} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts));
             if (status === RESPONSE_STATUS.OK) {
-                localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
                 localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
-                window.location.href = '/home';
+                navigate('/home');
             }
         } catch (e) {
-            const {errorCode, msg} = e.response.data
+            const {errorCode, msg} = e.response.data;
             if (errorCode === ERROR_CODE.ALREADY_EXISTS_USER) {
-                setEmailError(true)
-                setEmailErrorText(msg)
+                setEmailError(true);
+                setEmailErrorText(msg);
             }
         }
-        setIsLoading(false)
+        setIsLoading(false);
     };
 
     const getAccounts = () => {
-        const age = getAge(birth)
+        const age = getAge(birth);
         const accounts = {
             email
             , password
@@ -138,7 +140,7 @@ const SignUp = () => {
             , birth
             , age
         };
-        return accounts
+        return accounts;
     }
 
     
