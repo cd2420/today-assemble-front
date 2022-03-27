@@ -73,6 +73,9 @@ function Header(props) {
         setAccounts(data);
         setJwt(_jwt);
         setIsAuthorized(true);
+      } else {
+        dataInit();
+        navigate('/login');
       }
     } catch(e) {
       console.log(e);
