@@ -362,7 +362,8 @@ const EventsDetail = () => {
                                                 && 
                                                 <Button
                                                     key="3" 
-                                                    variant="outlined" 
+                                                    variant="outlined"
+                                                    onClick={() => {navigate(`/events/update/${event.id}`)}}
                                                 >
                                                     수정
                                                 </Button>

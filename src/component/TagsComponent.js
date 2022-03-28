@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import "@yaireo/tagify/dist/tagify.css";
 
-const TagsComponent = ({setTags}) => {
+const TagsComponent = ({setTags, defaultValue}) => {
 
     const onChange = useCallback((e) => {
         // console.log("CHANGED:"
@@ -24,6 +24,7 @@ const TagsComponent = ({setTags}) => {
         <Tags 
             onChange={onChange}
             placeholder="태그 입력"
+            defaultValue={defaultValue}
         />
     )
 }
