@@ -68,7 +68,7 @@ function Header(props) {
   const getAccounts = async (_jwt) => {
     try {
       const {data, status} = await getAccountsDataByJwt(_jwt);
-
+      
       if (status === RESPONSE_STATUS.OK) {
         setAccounts(data);
         setJwt(_jwt);

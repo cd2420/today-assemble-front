@@ -1,4 +1,4 @@
-import React, {useEffect, useState}  from 'react';
+import React  from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -12,10 +12,7 @@ import { useNavigate } from 'react-router-dom';
 function FeaturedPost(props) {
   const navigate = useNavigate();
   const { post } = props;
-
-  useEffect(() => {
-    
-  }, [])
+  post.tagsDtos = post.tagsDtos.splice(0,4);
 
   return (
     <Grid item xs={12} md={6}>
@@ -35,8 +32,17 @@ function FeaturedPost(props) {
               {post.description}
             </Typography>
             <div>
-                {post.tagsDtos.map(tag => (
-                    <Button variant="contained">{tag.name}</Button>
+                {post.tagsDtos.map((tag, idx) => (
+                    <Button 
+                      variant="outlined" 
+                      key={idx}
+                      sx={{ m: 0.5 }}
+                      style={{
+                          borderRadius: 20
+                      }}
+                    >
+                      #{tag.name}
+                    </Button>
                 ))}
             </div>
             {/* 총 인원, 좋아요 */}
