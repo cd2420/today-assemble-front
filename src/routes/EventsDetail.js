@@ -64,7 +64,6 @@ const EventsDetail = () => {
             , longitude
             , latitude
         });
-
     }
 
     const checkThisEventWithAccount = async (event_data) => {
@@ -235,8 +234,8 @@ const EventsDetail = () => {
                                         <CardMedia
                                             key = {idx}
                                             component="img"
-                                            sx={{ width: 160, m: 1, display: { xs: 'inline' } }}
                                             image={subImage.image}
+                                            sx={{ width: 160, m: 1, display: { xs: 'inline' } }}
                                             style={{
                                                 borderRadius: 2
                                             }}
@@ -292,69 +291,88 @@ const EventsDetail = () => {
                                         <Typography>
                                             태그
                                         </Typography>
+                                        <div>
+                                            {event.tagsDtos.map((tag, idx) => (
+                                                <Button 
+                                                    variant="outlined" 
+                                                    key={idx}
+                                                    sx={{ m: 0.5 }}
+                                                    style={{
+                                                        borderRadius: 20
+                                                    }}
+                                                >
+                                                #{tag.name}
+                                                </Button>
+                                            ))}
+                                        </div>
                                     </Grid>
                                 </Grid>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        '& > *': {
-                                        m: 3,
-                                        },
-                                    }}
-                                >
-                                    <ButtonGroup 
-                                        fullWidth
-                                        variant="text" 
-                                        aria-label="text button group"
+                                {
+                                    localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
+                                    &&
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            '& > *': {
+                                            m: 3,
+                                            },
+                                        }}
                                     >
-                                        <Button 
-                                            key="1" 
-                                            variant={event.isLikes ? "contained" : "outlined"}
-                                            onClick={likes}
+                                        <ButtonGroup 
+                                            fullWidth
+                                            variant="text" 
+                                            aria-label="text button group"
                                         >
-                                            좋아요 ({event.likesAccountsDtos ? event.likesAccountsDtos.length : 0 })
-                                        </Button>
-                                        <Button 
-                                            key="2" 
-                                            variant={event.isParticipate ? "contained" : "outlined"}
-                                            color={event.isParticipate ? "error" : "primary"}
-                                            onClick={isHost ? handleClickOpen : participateEventsManage}
-                                            disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
-                                        >
-                                            { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
-                                        </Button>
-                                        <Dialog onClose={handleClose} open={dialogOpen}>
-                                            <DialogTitle onClose={handleClose}>
-                                                모임 삭제
-                                            </DialogTitle>
-                                            <DialogContent>
-                                                <Typography gutterBottom>
-                                                    정말로 모임을 삭제 하시겠습니까?
-                                                </Typography>
-                                            </DialogContent>
-
-                                            <DialogActions>
-                                                <Button variant="contained" color="error" onClick={removeEvents}>삭제</Button>
-                                                <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
-                                            </DialogActions>
-                                        </Dialog>
-
-                                        {
-                                            isHost 
-                                            && 
-                                            <Button
-                                                key="3" 
-                                                variant="outlined" 
+                                            <Button 
+                                                key="1" 
+                                                variant={event.isLikes ? "contained" : "outlined"}
+                                                onClick={likes}
                                             >
-                                                수정
+                                                좋아요 ({event.likesAccountsDtos ? event.likesAccountsDtos.length : 0 })
                                             </Button>
+                                            <Button 
+                                                key="2" 
+                                                variant={event.isParticipate ? "contained" : "outlined"}
+                                                color={event.isParticipate ? "error" : "primary"}
+                                                onClick={isHost ? handleClickOpen : participateEventsManage}
+                                                disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
+                                            >
+                                                { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
+                                            </Button>
+                                            <Dialog onClose={handleClose} open={dialogOpen}>
+                                                <DialogTitle onClose={handleClose}>
+                                                    모임 삭제
+                                                </DialogTitle>
+                                                <DialogContent>
+                                                    <Typography gutterBottom>
+                                                        정말로 모임을 삭제 하시겠습니까?
+                                                    </Typography>
+                                                </DialogContent>
 
-                                        }
-                                        
-                                    </ButtonGroup>
-                                </Box>
+                                                <DialogActions>
+                                                    <Button variant="contained" color="error" onClick={removeEvents}>삭제</Button>
+                                                    <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
+                                                </DialogActions>
+                                            </Dialog>
+
+                                            {
+                                                isHost 
+                                                && 
+                                                <Button
+                                                    key="3" 
+                                                    variant="outlined" 
+                                                >
+                                                    수정
+                                                </Button>
+
+                                            }
+                                            
+                                        </ButtonGroup>
+                                    </Box>
+                                }
+                                
                             </Container>
                         )
                     }

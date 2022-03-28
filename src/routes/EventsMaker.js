@@ -213,8 +213,7 @@ const EventsMaker = () => {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    모임 태그
-                                    <TagsComponent setTags={setTags} isCU={true}/>
+                                    <TagsComponent setTags={setTags} />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
