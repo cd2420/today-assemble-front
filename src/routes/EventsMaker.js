@@ -18,6 +18,7 @@ import HEADER_SECTION from "../common/HeaderSection";
 import MainImageUpload from "../component/MainImageUpload";
 import DaumMap from "../component/DaumMap";
 import TakeTime from "../component/TakeTime";
+import TagsComponent from "../component/TagsComponent";
 
 
 
@@ -29,6 +30,7 @@ const EventsMaker = () => {
     const [profileImg, setProfileImg] = useState([]);
     const [eventName, setEventName] = useState('');
     const [description, setDescription] = useState('');
+    const [tags, setTags] = useState([]);
     const [maxMembers, setMaxMembers] = useState(1);
     const [eventsType, setEventsType] = useState('OFFLINE');
 
@@ -102,7 +104,7 @@ const EventsMaker = () => {
         event.preventDefault();
         setIsLoading(true);
         const req = makeReq();
-        
+
         try {
             const {data, status} = await API.post(
                 `/api/v1/events`
@@ -130,6 +132,9 @@ const EventsMaker = () => {
 
     const makeReq = () => {
         const {address, longitude, latitude} = _address;
+        const tagsSet = tags.map(tag => (
+            {"name" : tag}
+        ))
         let result = {
             name: eventName
             , description
@@ -140,6 +145,7 @@ const EventsMaker = () => {
             , address
             , longitude
             , latitude
+            , tagsSet
         }
 
         let image = '';
@@ -205,6 +211,10 @@ const EventsMaker = () => {
                                         value={description}
                                         onChange={onChange}
                                     />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    모임 태그
+                                    <TagsComponent setTags={setTags} isCU={true}/>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
