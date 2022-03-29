@@ -23,7 +23,15 @@ const EventsUpdate = ({events, jwt}) => {
 
     const navigate = useNavigate();
 
-    const [profileImg, setProfileImg] = useState([]);
+    const getMainImg = (data) => {
+        if (!data) {
+            return []
+        } else {
+           return data.filter(d => d.imagesType === 'MAIN').map(d => ({'data_url': d.image}))
+        }
+    }
+
+    const [mainImg, setMainImg] = useState(getMainImg(events.eventsImagesDtos));
     const [eventName, setEventName] = useState(events.name);
     const [description, setDescription] = useState(events.description);
     const [tags, setTags] = useState(events.tagsDtos.map(tag => (tag.name)));
@@ -58,11 +66,10 @@ const EventsUpdate = ({events, jwt}) => {
         } else {
             setCreateButton(true)
         }
-
     }
 
-    const upload = (imageList, addUpdateIndex) => {
-        setProfileImg(imageList);
+    const mainImgUpload = (imageList, addUpdateIndex) => {
+        setMainImg(imageList);
     }
 
     const onChange = (event) => {
@@ -143,9 +150,9 @@ const EventsUpdate = ({events, jwt}) => {
         }
 
         let image = '';
-        if (profileImg.length > 0) {
-            image = profileImg[0].data_url;
-        }
+        // if (profileImg.length > 0) {
+        //     image = profileImg[0].data_url;
+        // }
         result.eventsImagesSet = [{
             imagesType: 'MAIN'
             , image
@@ -172,9 +179,15 @@ const EventsUpdate = ({events, jwt}) => {
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <MainImageUpload upload={upload} profileImg={profileImg}/>            
-                        </Grid>
+                        {
+                            mainImg
+                            &&
+                            (
+                                <Grid item xs={12}>
+                                    <MainImageUpload upload={mainImgUpload} profileImg={mainImg}/>            
+                                </Grid>
+                            )
+                        }
                         <Grid item xs={12}>
                             <TextField
                                 autoComplete="eventName"
@@ -251,11 +264,12 @@ const EventsUpdate = ({events, jwt}) => {
                         <Grid item xs={12}>
                             <TakeTime 
                                 onChange={onChange}
+                                value={takeTime}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             모임 장소
-                            <DaumMap onChange={onChange}/>
+                            <DaumMap onChange={onChange} address={_address} isCUPage={true}/>
                         </Grid>
                     </Grid>
                     <LoadingButton

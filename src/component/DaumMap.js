@@ -5,16 +5,15 @@ import React, { useEffect, useState } from "react";
 const { kakao } = window;
 const { daum } = window;
 
-const DaumMap = ({onChange, address}) => {
-
-    const isDetailPage = address ? "block" : "none";
-    const isMakePage = !address ? "inline" : "none";
+const DaumMap = ({onChange, address, isCUPage}) => {
 
     const [container, setContainer] = useState({})
     const [map, setMap] = useState({})
     const [geocoder, setGeocoder] = useState({})
     const [marker, setMarker] = useState({})
-    
+
+    const str_address = address ? address.address : '';
+    const map_display = isCUPage && str_address === '' ? "none" : "block";
 
     useEffect(() => {
         setContainer(document.getElementById("map"));
@@ -83,18 +82,21 @@ const DaumMap = ({onChange, address}) => {
                 type="text" 
                 id="sample5_address"  
                 placeholder="주소" 
-                style={{display: isMakePage }}
+                // style={{display: cuPage }}
+                hidden={!isCUPage}
+                defaultValue={str_address}
             />
             <input 
                 type="button" 
                 onClick={sample5_execDaumPostcode} 
                 value="주소 검색" 
-                style={{display: isMakePage }}
+                // style={{display: cuPage }}
+                hidden={!isCUPage}
             />
             <br />
             <div 
                 id="map" 
-                style={{width:"300px", height:"300px", display: isDetailPage }}
+                style={{width:"300px", height:"300px", display: map_display}}
             ></div>
         </div>
     )

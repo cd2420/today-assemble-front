@@ -255,7 +255,7 @@ const EventsMaker = ({jwt}) => {
                         </Grid>
                         <Grid item xs={12}>
                             모임 장소
-                            <DaumMap onChange={onChange}/>
+                            <DaumMap onChange={onChange} isCUPage={true}/>
                         </Grid>
                     </Grid>
                     <LoadingButton

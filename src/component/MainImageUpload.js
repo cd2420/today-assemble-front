@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ImageUploading from "react-images-uploading";
 
 const MainImageUpload = ({upload, profileImg}) => {
