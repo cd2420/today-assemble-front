@@ -25,6 +25,7 @@ const EventsDetail = () => {
     const [isHost, setIsHost] = useState(false);
     const [address, setAddress] = useState({});
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [imgOpenCheck, setImgOpenCheck] = useState([]);
 
     useEffect(() => {
         
@@ -65,6 +66,13 @@ const EventsDetail = () => {
             , longitude
             , latitude
         });
+
+        const check = [];
+        for (let i = 0; i < data.subImage.length; i++) {
+            check.push(false);
+        }
+        
+        setImgOpenCheck(check);
     }
 
     const checkThisEventWithAccount = async (event_data) => {
@@ -202,17 +210,28 @@ const EventsDetail = () => {
         setDialogOpen(true);
     }
 
+    const subImgDetailOpen = (e) => {
+        const {target: {value}} = e;
+        const tmp_subImg = _.cloneDeep(imgOpenCheck)
+        tmp_subImg[value] = true;
+        setImgOpenCheck(tmp_subImg);
+    }
+
     const handleClose = (e) => {
         e.preventDefault();
-        setDialogOpen(false);
+        const {target: {name, value}} = e;
+        if (name === 'deleteBtn') {
+            setDialogOpen(false);
+        } else {
+            // imgOpenCheck[value] = false
+            // setImgOpenCheck(imgOpenCheck);
+        }
     }
 
     const removeEvents = async (e) => {
         await participateEventsManage(e);
         navigate('/home');
     }
-
-    
 
     const theme = createTheme();
 
@@ -251,8 +270,9 @@ const EventsDetail = () => {
                                             >
                                                 <CardActionArea 
                                                     component="a" 
-                                                    href="" 
-                                                    onClick={() => {}}
+                                                    // href="" 
+                                                    value={idx}
+                                                    onClick={() => subImgDetailOpen({target: {value: idx}})}
                                                 >
                                                     <CardMedia
                                                         key = {idx + 'idx'}
@@ -263,6 +283,23 @@ const EventsDetail = () => {
                                                         }}
                                                     />
                                                 </CardActionArea>
+                                                
+                                                    <Dialog onClose={handleClose} open={imgOpenCheck[idx]}>
+                                                        <DialogTitle onClose={handleClose}>
+                                                            상세 이미지
+                                                        </DialogTitle>
+                                                        <DialogContent>
+                                                            <CardMedia
+                                                                component="img"
+                                                                image={subImage.image}
+                                                            />
+                                                        </DialogContent>
+                                                        <DialogActions>
+                                                            <Button variant="contained" color="error" onClick={removeEvents}>삭제</Button>
+                                                            <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
+                                                        </DialogActions>
+                                                    </Dialog>
+                                                
                                             </Grid>
                                         </Grid>
                                         ))
@@ -270,9 +307,6 @@ const EventsDetail = () => {
                                     {
                                         isHost && 
                                         (
-                                            // <Button sx={{ width: 160, m:1, border: '1px dashed grey' }} >
-                                            //     사진 추가
-                                            // </Button>
                                             <SubImageUpload upload={upload} profileImg={[]} />
                                         )
                                     }
@@ -361,6 +395,7 @@ const EventsDetail = () => {
                                                 key="2" 
                                                 variant={event.isParticipate ? "contained" : "outlined"}
                                                 color={event.isParticipate ? "error" : "primary"}
+                                                name="deleteBtn"
                                                 onClick={isHost ? handleClickOpen : participateEventsManage}
                                                 disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
                                             >
