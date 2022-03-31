@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Button, ButtonGroup, CardMedia, Container, createTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
+import { Button, ButtonGroup, CardActionArea, CardMedia, Container, createTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import moment from "moment";
 import React, { useEffect, useState } from "react"
@@ -14,6 +14,7 @@ import MainFeaturedPost from "../component/MainFeaturedPost";
 import SubImageUpload from "../component/SubImageUpload";
 import API from "../config/customAxios";
 import _ from 'lodash';
+import { DeleteForever } from "@mui/icons-material";
 
 const EventsDetail = () => {
     
@@ -190,6 +191,12 @@ const EventsDetail = () => {
         }
     }
 
+    const deleteSubImg = (e) => {
+        // const {target:{value}} = e;
+        console.log(e);
+
+    }
+
     const handleClickOpen = (e) => {
         e.preventDefault();
         setDialogOpen(true);
@@ -231,15 +238,33 @@ const EventsDetail = () => {
                                     }}
                                 >
                                     {event.subImage.map((subImage, idx) => (
-                                        <CardMedia
-                                            key = {idx}
-                                            component="img"
-                                            image={subImage.image}
-                                            sx={{ width: 160, m: 1, display: { xs: 'inline' } }}
-                                            style={{
-                                                borderRadius: 2
-                                            }}
-                                        />
+                                        <Grid 
+                                            container 
+                                            key = {idx + 'box'}
+                                            direction="column"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                            sx={{width: 200, height: 200, m:1}}
+                                        >
+                                            <Grid 
+                                                item
+                                            >
+                                                <CardActionArea 
+                                                    component="a" 
+                                                    href="" 
+                                                    onClick={() => {}}
+                                                >
+                                                    <CardMedia
+                                                        key = {idx + 'idx'}
+                                                        component="img"
+                                                        image={subImage.image}
+                                                        style={{
+                                                            borderRadius: 2
+                                                        }}
+                                                    />
+                                                </CardActionArea>
+                                            </Grid>
+                                        </Grid>
                                         ))
                                     }
                                     {
