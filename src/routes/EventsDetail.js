@@ -145,7 +145,7 @@ const EventsDetail = () => {
     }
 
     const showEndTime = () => {
-        const end = new Date(moment(event.eventsTime).format('YYYY-MM-DD hh:mm'));
+        const end = new Date(moment(event.eventsTime).format('YYYY-MM-DD HH:mm'));
         end.setHours(end.getHours() + event.takeTime);
         return moment(end).format('YYYY-MM-DD HH시 mm분');
     }
