@@ -107,7 +107,7 @@ const EventsUpdate = ({events, jwt}) => {
         const req = makeReq();
 
         try {
-            const {data, status} = await API.post(
+            const {data, status} = await API.put(
                 `/api/v1/events`
                 , JSON.stringify(req)
                 , {
@@ -137,7 +137,9 @@ const EventsUpdate = ({events, jwt}) => {
             {"name" : tag}
         ))
         let result = {
-            name: eventName
+            id: events.id
+            , accountsId: events.accountsId
+            , name: eventName
             , description
             , maxMembers
             , eventsType
