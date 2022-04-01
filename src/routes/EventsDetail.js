@@ -41,10 +41,6 @@ const EventsDetail = () => {
             if (status === RESPONSE_STATUS.OK) {
                 if (data) {
                     settingImageAndAddress(data);
-                    
-                    // 내가 만든 모임일 경우 사진 추가 버튼 보이게.
-                    // 내가 참여중인 모임인지 체크
-                    // 내가 좋아요 누른 모임인지 체크
                     await checkThisEventWithAccount(data);
                     setEvent(data);
                 }
@@ -199,22 +195,61 @@ const EventsDetail = () => {
         }
     }
 
-    const deleteSubImg = (e) => {
-        // const {target:{value}} = e;
-        console.log(e);
+    const subImgDetailOpen = (e) => {
+        const {target: {value}} = e;
+        const tmp_subImg = _.cloneDeep(imgOpenCheck);
+        tmp_subImg[value] = true;
+        setImgOpenCheck(tmp_subImg);
+    }
 
+    const subImgDetailClose = (e) => {
+        const {target: {value}} = e;
+        const tmp_subImg = _.cloneDeep(imgOpenCheck);
+        tmp_subImg[value] = false;
+        setImgOpenCheck(tmp_subImg);
+    }
+
+    const removeEventsSubImg = async (e) => {
+        const {target: {value}} = e;
+        event.subImage.splice(value, 1);
+
+        const req = {
+            id: event.id
+            , accountsId: event.accountsId
+            , images: []
+        }
+        if (event.subImage) {
+            req.images = req.images.concat(event.subImage.map(img => ({imagesType:'SUB', image:img.image})));
+        }
+        
+        req.images.push(event.eventsImagesDtos.filter(img => {return img.imagesType === 'MAIN'})[0]);
+
+        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+        try {
+            if (jwt) {
+                const {data, status}  = await API.put(
+                                `/api/v1/events/images`
+                                , JSON.stringify(req)
+                                , {
+                                    headers : {
+                                        'Authorization': jwt
+                                    }
+                                });
+                if (status === RESPONSE_STATUS.OK) {
+                    settingImageAndAddress(data);
+                    await checkThisEventWithAccount(data);
+                    setEvent(data);
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        
     }
 
     const handleClickOpen = (e) => {
         e.preventDefault();
         setDialogOpen(true);
-    }
-
-    const subImgDetailOpen = (e) => {
-        const {target: {value}} = e;
-        const tmp_subImg = _.cloneDeep(imgOpenCheck)
-        tmp_subImg[value] = true;
-        setImgOpenCheck(tmp_subImg);
     }
 
     const handleClose = (e) => {
@@ -284,8 +319,8 @@ const EventsDetail = () => {
                                                     />
                                                 </CardActionArea>
                                                 
-                                                    <Dialog onClose={handleClose} open={imgOpenCheck[idx]}>
-                                                        <DialogTitle onClose={handleClose}>
+                                                    <Dialog onClose={() => subImgDetailClose({target: {value: idx}})} open={imgOpenCheck[idx]}>
+                                                        <DialogTitle onClose={() => subImgDetailClose({target: {value: idx}})}>
                                                             상세 이미지
                                                         </DialogTitle>
                                                         <DialogContent>
@@ -295,8 +330,11 @@ const EventsDetail = () => {
                                                             />
                                                         </DialogContent>
                                                         <DialogActions>
-                                                            <Button variant="contained" color="error" onClick={removeEvents}>삭제</Button>
-                                                            <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
+                                                            {
+                                                                isHost &&
+                                                                <Button variant="contained" color="error" onClick={() => removeEventsSubImg({target: {value: idx}})}>삭제</Button>
+                                                            }
+                                                            <Button variant="contained" color="primary" onClick={() => subImgDetailClose({target: {value: idx}})}>닫기</Button>
                                                         </DialogActions>
                                                     </Dialog>
                                                 

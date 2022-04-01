@@ -114,23 +114,28 @@ export function validatePassword(val, check_val, setPasswordError, setPasswordEr
 }
 
 export function createEventMainImage(event) {
-    const checkMainImages = event.eventsImagesDtos.filter(
-        item => {
-            return item.imagesType === 'MAIN'
+    if (event.eventsImagesDtos) {
+        const checkMainImages = event.eventsImagesDtos.filter(
+            item => {
+                return item.imagesType === 'MAIN';
+            }
+        )
+    
+        if (checkMainImages.length > 0 && checkMainImages[0].image) {
+            event.mainImage = checkMainImages[0].image;
+        } else {
+            event.mainImage = 'https://source.unsplash.com/random';
         }
-    )
-
-    if (checkMainImages.length > 0 && checkMainImages[0].image) {
-        event.mainImage = checkMainImages[0].image
-    } else {
-        event.mainImage = 'https://source.unsplash.com/random'
     }
 }
 
 export function createEventSubImage(event) {
-    event.subImage = event.eventsImagesDtos.filter(
-        item => {
-            return item.imagesType === 'SUB'
-        }
-    )
+    if (event.eventsImagesDtos) {
+        event.subImage = event.eventsImagesDtos.filter(
+            item => {
+                return item.imagesType === 'SUB';
+            }
+        )
+    }
+    
 }
