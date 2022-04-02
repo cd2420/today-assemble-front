@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@emotion/react";
-import { Button, ButtonGroup, CardActionArea, CardMedia, Container, createTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
+import { Button, ButtonGroup, Container, createTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import moment from "moment";
 import React, { useEffect, useState } from "react"
@@ -11,10 +11,9 @@ import { createEventMainImage, createEventSubImage } from "../common/Utils";
 import DaumMap from "../component/DaumMap";
 import Header from "../component/Header";
 import MainFeaturedPost from "../component/MainFeaturedPost";
-import SubImageUpload from "../component/SubImageUpload";
 import API from "../config/customAxios";
 import _ from 'lodash';
-import { DeleteForever } from "@mui/icons-material";
+import SubImagesArea from "../component/SubImagesArea";
 
 const EventsDetail = () => {
     
@@ -25,8 +24,7 @@ const EventsDetail = () => {
     const [isHost, setIsHost] = useState(false);
     const [address, setAddress] = useState({});
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [imgOpenCheck, setImgOpenCheck] = useState([]);
-
+    
     useEffect(() => {
         
         if (params.events_id) {
@@ -62,13 +60,6 @@ const EventsDetail = () => {
             , longitude
             , latitude
         });
-
-        const check = [];
-        for (let i = 0; i < data.subImage.length; i++) {
-            check.push(false);
-        }
-        
-        setImgOpenCheck(check);
     }
 
     const checkThisEventWithAccount = async (event_data) => {
@@ -99,9 +90,9 @@ const EventsDetail = () => {
                 }
             }
         }
-
     }
 
+    // subImage 추가 함수
     const upload = async (imageList, addUpdateIndex) => {
         const req = {
             id: event.id
@@ -134,10 +125,45 @@ const EventsDetail = () => {
             } catch (e) {
                 console.log(e);
             }
-            
-            
+        }
+    }
+
+    // subImage 삭제 함수
+    const removeEventsSubImg = async (e) => {
+        const {target: {value}} = e;
+        event.subImage.splice(value, 1);
+
+        const req = {
+            id: event.id
+            , accountsId: event.accountsId
+            , images: []
+        }
+        if (event.subImage) {
+            req.images = req.images.concat(event.subImage.map(img => ({imagesType:'SUB', image:img.image})));
         }
         
+        req.images.push(event.eventsImagesDtos.filter(img => {return img.imagesType === 'MAIN'})[0]);
+
+        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
+        try {
+            if (jwt) {
+                const {data, status}  = await API.put(
+                                `/api/v1/events/images`
+                                , JSON.stringify(req)
+                                , {
+                                    headers : {
+                                        'Authorization': jwt
+                                    }
+                                });
+                if (status === RESPONSE_STATUS.OK) {
+                    settingImageAndAddress(data);
+                    await checkThisEventWithAccount(data);
+                    setEvent(data);
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     const showEndTime = () => {
@@ -195,58 +221,6 @@ const EventsDetail = () => {
         }
     }
 
-    const subImgDetailOpen = (e) => {
-        const {target: {value}} = e;
-        const tmp_subImg = _.cloneDeep(imgOpenCheck);
-        tmp_subImg[value] = true;
-        setImgOpenCheck(tmp_subImg);
-    }
-
-    const subImgDetailClose = (e) => {
-        const {target: {value}} = e;
-        const tmp_subImg = _.cloneDeep(imgOpenCheck);
-        tmp_subImg[value] = false;
-        setImgOpenCheck(tmp_subImg);
-    }
-
-    const removeEventsSubImg = async (e) => {
-        const {target: {value}} = e;
-        event.subImage.splice(value, 1);
-
-        const req = {
-            id: event.id
-            , accountsId: event.accountsId
-            , images: []
-        }
-        if (event.subImage) {
-            req.images = req.images.concat(event.subImage.map(img => ({imagesType:'SUB', image:img.image})));
-        }
-        
-        req.images.push(event.eventsImagesDtos.filter(img => {return img.imagesType === 'MAIN'})[0]);
-
-        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
-        try {
-            if (jwt) {
-                const {data, status}  = await API.put(
-                                `/api/v1/events/images`
-                                , JSON.stringify(req)
-                                , {
-                                    headers : {
-                                        'Authorization': jwt
-                                    }
-                                });
-                if (status === RESPONSE_STATUS.OK) {
-                    settingImageAndAddress(data);
-                    await checkThisEventWithAccount(data);
-                    setEvent(data);
-                }
-            }
-        } catch (e) {
-            console.log(e);
-        }
-        
-    }
-
     const handleClickOpen = (e) => {
         e.preventDefault();
         setDialogOpen(true);
@@ -254,13 +228,7 @@ const EventsDetail = () => {
 
     const handleClose = (e) => {
         e.preventDefault();
-        const {target: {name, value}} = e;
-        if (name === 'deleteBtn') {
-            setDialogOpen(false);
-        } else {
-            // imgOpenCheck[value] = false
-            // setImgOpenCheck(imgOpenCheck);
-        }
+        setDialogOpen(false);
     }
 
     const removeEvents = async (e) => {
@@ -281,75 +249,7 @@ const EventsDetail = () => {
                         (   
                             <Container component="main" >
                                 <MainFeaturedPost post={event} />
-                                <Box
-                                    mb={2}
-                                    display="flex"
-                                    flexDirection="row"
-                                    style={{
-                                        maxHeight: '100vh', // fixed the height
-                                        overflow: "scroll",
-                                        overflowY: "hidden" // added scroll
-                                    }}
-                                >
-                                    {event.subImage.map((subImage, idx) => (
-                                        <Grid 
-                                            container 
-                                            key = {idx + 'box'}
-                                            direction="column"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                            sx={{width: 200, height: 200, m:1}}
-                                        >
-                                            <Grid 
-                                                item
-                                            >
-                                                <CardActionArea 
-                                                    component="a" 
-                                                    // href="" 
-                                                    value={idx}
-                                                    onClick={() => subImgDetailOpen({target: {value: idx}})}
-                                                >
-                                                    <CardMedia
-                                                        key = {idx + 'idx'}
-                                                        component="img"
-                                                        image={subImage.image}
-                                                        style={{
-                                                            borderRadius: 2
-                                                        }}
-                                                    />
-                                                </CardActionArea>
-                                                
-                                                    <Dialog onClose={() => subImgDetailClose({target: {value: idx}})} open={imgOpenCheck[idx]}>
-                                                        <DialogTitle onClose={() => subImgDetailClose({target: {value: idx}})}>
-                                                            상세 이미지
-                                                        </DialogTitle>
-                                                        <DialogContent>
-                                                            <CardMedia
-                                                                component="img"
-                                                                image={subImage.image}
-                                                            />
-                                                        </DialogContent>
-                                                        <DialogActions>
-                                                            {
-                                                                isHost &&
-                                                                <Button variant="contained" color="error" onClick={() => removeEventsSubImg({target: {value: idx}})}>삭제</Button>
-                                                            }
-                                                            <Button variant="contained" color="primary" onClick={() => subImgDetailClose({target: {value: idx}})}>닫기</Button>
-                                                        </DialogActions>
-                                                    </Dialog>
-                                                
-                                            </Grid>
-                                        </Grid>
-                                        ))
-                                    }
-                                    {
-                                        isHost && 
-                                        (
-                                            <SubImageUpload upload={upload} profileImg={[]} />
-                                        )
-                                    }
-                                    
-                                </Box>
+                                <SubImagesArea event={event} isHost={isHost} upload={upload} removeEventsSubImg={removeEventsSubImg}/>
                                 <Grid container spacing={2} >
                                     <Grid 
                                         item
