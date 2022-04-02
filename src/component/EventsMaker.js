@@ -8,7 +8,6 @@ import Container from '@mui/material/Container';
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
 import {ERROR_CODE} from "../common/GlobalConst";
-import { getLocalStorageData } from "../common/Utils";
 import { DateTimePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -17,6 +16,7 @@ import MainImageUpload from "./MainImageUpload";
 import DaumMap from "./DaumMap";
 import TakeTime from "./TakeTime";
 import TagsComponent from "./TagsComponent";
+import { adjustTimeZone } from "../common/Utils";
 
 
 
@@ -138,6 +138,9 @@ const EventsMaker = ({jwt}) => {
             , latitude
             , tagsSet
         }
+
+        // JSON.stringfy 할때 timeZone에 의해 시간이 바뀌는 현상 수정
+        adjustTimeZone(result.eventsTime);
 
         let image = '';
         if (profileImg.length > 0) {

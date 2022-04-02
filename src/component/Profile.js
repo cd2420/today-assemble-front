@@ -3,7 +3,7 @@ import { Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGro
 import React, {useState, useEffect} from 'react';
 import { LOCAL_STORAGE_CONST } from '../common/GlobalConst';
 import { RESPONSE_STATUS } from '../common/ResponseStatus';
-import { getAge, validateUserName } from '../common/Utils';
+import { adjustTimeZone, getAge, validateUserName } from '../common/Utils';
 import API from '../config/customAxios';
 import DateComponent from './DateComponent';
 import MainImageUpload from './MainImageUpload';
@@ -66,6 +66,9 @@ const Profile = ({accounts, jwt}) => {
             imagesType: 'MAIN'
             , image
         }
+
+        // JSON.stringfy 할때 timeZone에 의해 시간이 바뀌는 현상 수정
+        adjustTimeZone(accounts.birth);
 
         try {
             const {data, status, headers} = await API.put(

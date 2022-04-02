@@ -139,3 +139,10 @@ export function createEventSubImage(event) {
     }
     
 }
+
+export function adjustTimeZone(time) {
+    let hoursDiff = time.getHours() - time.getTimezoneOffset() / 60;
+    let minutesDiff = (time.getMinutes() - time.getTimezoneOffset()) % 60;
+    time.setHours(hoursDiff);
+    time.setMinutes(minutesDiff);
+}

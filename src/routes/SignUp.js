@@ -7,7 +7,7 @@ import HEADER_SECTION from "../common/HeaderSection";
 import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import DateComponent from "../component/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
-import { getAge, getLocalStorageData, validatePassword, validateUserName } from "../common/Utils";
+import { adjustTimeZone, getAge, getLocalStorageData, validatePassword, validateUserName } from "../common/Utils";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 
@@ -140,6 +140,10 @@ const SignUp = () => {
             , birth
             , age
         };
+
+        // JSON.stringfy 할때 timeZone에 의해 시간이 바뀌는 현상 수정
+        adjustTimeZone(accounts.birth);
+        
         return accounts;
     }
 
