@@ -151,6 +151,12 @@ const EventsUpdate = ({events, jwt}) => {
             , tagsSet
         }
 
+        // JSON.stringfy 할때 timeZone에 의해 시간이 바뀌는 현상 수정
+        let hoursDiff = result.eventsTime.getHours() - result.eventsTime.getTimezoneOffset() / 60;
+        let minutesDiff = (result.eventsTime.getMinutes() - result.eventsTime.getTimezoneOffset()) % 60;
+        result.eventsTime.setHours(hoursDiff);
+        result.eventsTime.setMinutes(minutesDiff);
+
         let image = '';
         // if (profileImg.length > 0) {
         //     image = profileImg[0].data_url;
