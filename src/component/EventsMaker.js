@@ -142,14 +142,14 @@ const EventsMaker = ({jwt}) => {
         // JSON.stringfy 할때 timeZone에 의해 시간이 바뀌는 현상 수정
         adjustTimeZone(result.eventsTime);
 
-        let image = '';
         if (profileImg.length > 0) {
-            image = profileImg[0].data_url;
+            const image = profileImg[0].data_url;
+            result.eventsImagesSet = [{
+                imagesType: 'MAIN'
+                , image
+            }]
         }
-        result.eventsImagesSet = [{
-            imagesType: 'MAIN'
-            , image
-        }]
+
 
         return result;
 
