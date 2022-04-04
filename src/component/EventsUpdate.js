@@ -25,7 +25,8 @@ const EventsUpdate = ({events, jwt}) => {
     const navigate = useNavigate();
 
     const getMainImg = (data) => {
-        if (!data) {
+        const check_main = data.filter(d => d.imagesType === 'MAIN');
+        if (!data ||  check_main.length === 0 || check_main[0].image === '') {
             return []
         } else {
            return data.filter(d => d.imagesType === 'MAIN').map(d => ({'data_url': d.image}))
@@ -104,10 +105,10 @@ const EventsUpdate = ({events, jwt}) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setIsLoading(true);
         const req = makeReq();
 
         try {
+            setIsLoading(true);
             const {data, status} = await API.put(
                 `/api/v1/events`
                 , JSON.stringify(req)
@@ -134,9 +135,6 @@ const EventsUpdate = ({events, jwt}) => {
 
     const makeReq = () => {
         const {address, longitude, latitude} = _address;
-        const tagsSet = tags.map(tag => (
-            {"name" : tag}
-        ))
         let result = {
             id: events.id
             , accountsId: events.accountsId
@@ -149,19 +147,19 @@ const EventsUpdate = ({events, jwt}) => {
             , address
             , longitude
             , latitude
-            , tagsSet
+            , tags
         }
         // JSON.stringfy 할때 timeZone에 의해 시간이 바뀌는 현상 수정
         adjustTimeZone(result.eventsTime);
 
-        let image = '';
-        // if (profileImg.length > 0) {
-        //     image = profileImg[0].data_url;
-        // }
-        result.eventsImagesSet = [{
-            imagesType: 'MAIN'
-            , image
-        }]
+        if (mainImg.length > 0) {
+            const image = mainImg[0].data_url;
+            result.images = events.eventsImagesDtos.concat([{
+                imagesType: 'MAIN'
+                , image
+            }]);
+        }
+
 
         return result;
 
