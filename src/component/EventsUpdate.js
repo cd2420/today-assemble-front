@@ -262,6 +262,7 @@ const EventsUpdate = ({events, jwt}) => {
                                         setEventsTimeError(false)
                                         setEventsTimeErrorText('')
                                     }}
+                                    minDateTime = {new Date()}
                                 />
                             </LocalizationProvider>
                             <FormHelperText error={eventsTimeError}>{eventsTimeErrorText}</FormHelperText>
