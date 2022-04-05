@@ -158,6 +158,8 @@ const EventsUpdate = ({events, jwt}) => {
                 imagesType: 'MAIN'
                 , image
             }]);
+        } else {
+            result.images = events.eventsImagesDtos.filter(image => {return image.imagesType === 'SUB'})
         }
 
 

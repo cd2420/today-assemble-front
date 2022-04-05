@@ -142,8 +142,11 @@ const EventsDetail = () => {
             req.images = req.images.concat(event.subImage.map(img => ({imagesType:'SUB', image:img.image})));
         }
         
-        req.images.push(event.eventsImagesDtos.filter(img => {return img.imagesType === 'MAIN'})[0]);
-
+        const checkMainImg = event.eventsImagesDtos.filter(img => {return img.imagesType === 'MAIN'});
+        if (checkMainImg.length > 0) {
+            req.images.push(checkMainImg[0]);
+        }
+        
         const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
         try {
             if (jwt) {
