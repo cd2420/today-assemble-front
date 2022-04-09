@@ -25,6 +25,7 @@ const EventsMaker = ({jwt}) => {
     const navigate = useNavigate();
     const tDate = new Date();
     tDate.setMinutes(0);
+    tDate.setHours(tDate.getHours() + 1);
 
     const [profileImg, setProfileImg] = useState([]);
     const [eventName, setEventName] = useState('');
@@ -33,7 +34,7 @@ const EventsMaker = ({jwt}) => {
     const [maxMembers, setMaxMembers] = useState(1);
     const [eventsType, setEventsType] = useState('OFFLINE');
 
-    const [eventsTime, setEventsTime] = useState(tDate.setHours(tDate.getHours() + 1));
+    const [eventsTime, setEventsTime] = useState(new Date(tDate));
     const [eventsTimeError, setEventsTimeError] = useState(false);
     const [eventsTimeErrorText, setEventsTimeErrorText] = useState('');
 
