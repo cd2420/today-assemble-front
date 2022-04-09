@@ -44,7 +44,14 @@ function MainFeaturedPost(props) {
               {post.name}
             </Typography>
             <Typography variant="h5" color="inherit" paragraph>
-              {post.description}
+              { post.description &&
+                post.description.split('\n').map((item, idx) => (
+                  <span key={idx}>
+                      {item}
+                      <br />
+                  </span>
+                ))
+              }
             </Typography>
           </Box>
         </Grid>

@@ -28,9 +28,6 @@ function FeaturedPost(props) {
             <Typography variant="subtitle1" color="text.secondary">
               걸리는 시간: {post.takeTime}시간
             </Typography>
-            <Typography variant="subtitle1" paragraph>
-              {post.description}
-            </Typography>
             <div>
                 {post.tagsDtos.map((tag, idx) => (
                     <Button 
@@ -49,7 +46,7 @@ function FeaturedPost(props) {
           </CardContent>
           <CardMedia
             component="img"
-            sx={{ width: 160, display: { xs: 'none', sm: 'block' } }}
+            sx={{ width: 160, height: 250, mdisplay: { xs: 'none', sm: 'block' } }}
             image={post.mainImage}
           />
         </Card>
