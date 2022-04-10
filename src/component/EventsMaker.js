@@ -17,6 +17,7 @@ import DaumMap from "./DaumMap";
 import TakeTime from "./TakeTime";
 import TagsComponent from "./TagsComponent";
 import { adjustTimeZone } from "../common/Utils";
+import PopUpPage from "./PopUpPage";
 
 
 
@@ -26,6 +27,8 @@ const EventsMaker = ({jwt}) => {
     const tDate = new Date();
     tDate.setMinutes(0);
     tDate.setHours(tDate.getHours() + 1);
+
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const [profileImg, setProfileImg] = useState([]);
     const [eventName, setEventName] = useState('');
@@ -114,12 +117,18 @@ const EventsMaker = ({jwt}) => {
             }
 
         } catch(e) {
-            const {errorCode, msg} = e.response.data;
-            console.log(errorCode, msg);
-            if (errorCode === ERROR_CODE.DATE_OVERLAP) {
-                setEventsTimeError(true)
-                setEventsTimeErrorText(msg)
+            const errorStatus = e.response.status;
+            if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {
+                setAnchorEl(true);
+            } else {
+                const {errorCode, msg} = e.response.data;
+                console.log(errorCode, msg);
+                if (errorCode === ERROR_CODE.DATE_OVERLAP) {
+                    setEventsTimeError(true)
+                    setEventsTimeErrorText(msg)
+                }
             }
+            
             setIsLoading(false);
         }
     }
@@ -276,6 +285,7 @@ const EventsMaker = ({jwt}) => {
                     >
                         모임 생성
                     </LoadingButton>
+                    <PopUpPage anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
                 </Box>
             </Box>
         </Container>
