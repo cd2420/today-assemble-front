@@ -6,8 +6,10 @@ import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import { Button } from '@mui/material';
+import { Button, CardActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { Box } from '@mui/system';
 
 function FeaturedPost(props) {
   const navigate = useNavigate();
@@ -15,10 +17,15 @@ function FeaturedPost(props) {
   post.tagsDtos = post.tagsDtos.splice(0,4);
 
   return (
-    <Grid item xs={12} md={6}>
-      <CardActionArea component="a" href="" onClick={() => navigate(`/events/${post.id}`)}>
-        <Card sx={{ display: 'flex' }}>
-          <CardContent sx={{ flex: 1 }}>
+    <Grid item xs={12} md={4}>     
+      <Card sx={{ maxWidth: 345 }}>
+        <CardActionArea component="a" href="" onClick={() => navigate(`/events/${post.id}`)}>
+          <CardMedia
+            component="img"
+            sx={{ height: 250,mdisplay: { xs: 'none', sm: 'block' } }}
+            image={post.mainImage}
+          />
+          <CardContent>
             <Typography component="h2" variant="h5">
               {post.name}
             </Typography>
@@ -27,6 +34,9 @@ function FeaturedPost(props) {
             </Typography>
             <Typography variant="subtitle1" color="text.secondary">
               걸리는 시간: {post.takeTime}시간
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary">
+                참여인원 : {post.nowMembers} / {post.maxMembers}
             </Typography>
             <div>
                 {post.tagsDtos.map((tag, idx) => (
@@ -42,15 +52,14 @@ function FeaturedPost(props) {
                     </Button>
                 ))}
             </div>
-            {/* 총 인원, 좋아요 */}
           </CardContent>
-          <CardMedia
-            component="img"
-            sx={{ width: 160, height: 250, mdisplay: { xs: 'none', sm: 'block' } }}
-            image={post.mainImage}
-          />
-        </Card>
-      </CardActionArea>
+        </CardActionArea>
+        <CardActions>
+            <Button variant="outlined" style={{cursor: 'default'}}>
+              좋아요 <FavoriteIcon /> : {post.likesAccountsDtos ? post.likesAccountsDtos.length : 0 }
+            </Button>
+        </CardActions>  
+      </Card>
     </Grid>
   );
 }
