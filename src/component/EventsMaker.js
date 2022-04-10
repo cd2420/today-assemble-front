@@ -101,7 +101,7 @@ const EventsMaker = ({jwt}) => {
         event.preventDefault();
         setIsLoading(true);
         const req = makeReq();
-
+        const currentTarget = event.currentTarget;
         try {
             const {data, status} = await API.post(
                 `/api/v1/events`
@@ -119,7 +119,7 @@ const EventsMaker = ({jwt}) => {
         } catch(e) {
             const errorStatus = e.response.status;
             if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {
-                setAnchorEl(true);
+                setAnchorEl(currentTarget);
             } else {
                 const {errorCode, msg} = e.response.data;
                 console.log(errorCode, msg);

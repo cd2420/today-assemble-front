@@ -4,9 +4,12 @@ import React, {useState, useEffect} from 'react';
 import { RESPONSE_STATUS } from '../common/ResponseStatus';
 import { validatePassword } from '../common/Utils';
 import API from '../config/customAxios';
+import PopUpPage from './PopUpPage';
 
 
 const PasswordPage = ({accounts, jwt}) => {
+
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
@@ -42,7 +45,8 @@ const PasswordPage = ({accounts, jwt}) => {
 
     const updatePassword = async (event) => {
         event.preventDefault();
-        setIsLoading(true)
+        setIsLoading(true);
+        const currentTarget = event.currentTarget;
 
         accounts.password = password
         try {
@@ -60,6 +64,10 @@ const PasswordPage = ({accounts, jwt}) => {
                 setIsOk(true)
             }
         } catch(e) {
+            const errorStatus = e.response.status;
+            if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {
+                setAnchorEl(currentTarget);
+            }
 
         } finally {
             setIsLoading(false)
@@ -117,6 +125,7 @@ const PasswordPage = ({accounts, jwt}) => {
             >
                 변경
             </LoadingButton>
+            <PopUpPage anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
         </Grid>
     )
 }

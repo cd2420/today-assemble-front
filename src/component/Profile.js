@@ -1,14 +1,16 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import React, {useState, useEffect} from 'react';
-import { LOCAL_STORAGE_CONST } from '../common/GlobalConst';
 import { RESPONSE_STATUS } from '../common/ResponseStatus';
 import { adjustTimeZone, getAge, validateUserName } from '../common/Utils';
 import API from '../config/customAxios';
 import DateComponent from './DateComponent';
 import MainImageUpload from './MainImageUpload';
+import PopUpPage from './PopUpPage';
 
 const Profile = ({accounts, jwt}) => {
+
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const [profileImg, setProfileImg] = useState([]);
 
@@ -52,6 +54,7 @@ const Profile = ({accounts, jwt}) => {
     const updateAccounts = async (event) => {
         event.preventDefault();
         setIsLoading(true);
+        const currentTarget = event.currentTarget;
 
         accounts.name = userName;
         accounts.gender = gender;
@@ -82,11 +85,16 @@ const Profile = ({accounts, jwt}) => {
             )
 
             if (status === RESPONSE_STATUS.OK) {
-                localStorage.setItem(LOCAL_STORAGE_CONST.ACCOUNTS, JSON.stringify(data));
                 window.location.replace("/setting")
             }
         } catch (e) {
-            const {errorCode, msg} = e.response.data
+            const errorStatus = e.response.status;
+            if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {
+                setAnchorEl(currentTarget);
+            }  else {
+                const {errorCode, msg} = e.response.data
+            }
+            
         } finally {
             setIsLoading(false)
         }
@@ -164,6 +172,7 @@ const Profile = ({accounts, jwt}) => {
             >
                 수정
             </LoadingButton>
+            <PopUpPage anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
         </Grid>
     )
 }

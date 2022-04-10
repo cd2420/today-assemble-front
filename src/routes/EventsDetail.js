@@ -14,11 +14,14 @@ import MainFeaturedPost from "../component/MainFeaturedPost";
 import API from "../config/customAxios";
 import _ from 'lodash';
 import SubImagesArea from "../component/SubImagesArea";
+import PopUpPage from "../component/PopUpPage";
 
 const EventsDetail = () => {
     
     const params = useParams();
     const navigate = useNavigate();
+
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const [event, setEvent] = useState(null);
     const [isHost, setIsHost] = useState(false);
@@ -202,6 +205,7 @@ const EventsDetail = () => {
 
     const participateEventsManage = async (e) => {
         e.preventDefault();
+        const currentTarget = e.currentTarget;
         const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
         try {
             if (jwt) {
@@ -221,6 +225,10 @@ const EventsDetail = () => {
             }
         } catch (e) {
             console.log(e);
+            const errorStatus = e.response.status;
+            if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {
+                setAnchorEl(currentTarget);
+            } 
         }
     }
 
@@ -342,6 +350,11 @@ const EventsDetail = () => {
                                             >
                                                 { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
                                             </Button>
+                                            {
+                                                anchorEl &&
+                                                <PopUpPage anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
+                                            }
+                                            
                                             <Dialog onClose={handleClose} open={dialogOpen}>
                                                 <DialogTitle onClose={handleClose}>
                                                     모임 삭제
