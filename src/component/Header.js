@@ -58,8 +58,9 @@ function Header(props) {
 
   const emailAPI = async (email, token, url) => {
     const {data, headers, status} = await API.get(`/api/v1/email/${url}?email=${email}&token=${token}`);
-    if (status) {
+    if (status === RESPONSE_STATUS.OK) {
       setAccounts(data);
+      localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization)
       setJwt(headers.authorization);
       setIsAuthorized(true);
     }
