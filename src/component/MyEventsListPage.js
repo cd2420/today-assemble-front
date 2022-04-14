@@ -5,30 +5,39 @@ import { RESPONSE_STATUS } from '../common/ResponseStatus';
 import { createEventMainImage } from '../common/Utils';
 import API from '../config/customAxios';
 import FeaturedPost from './FeaturedPost';
+import PaginatedItems from './PaginatedItems';
 
 
 const MyEventsListPage = ({jwt}) => {
 
-    const [events, setEvents] = useState([]);
+    // We start with an empty list of items.
+    const itemsPerPage = 9;
+    const [currentItems, setCurrentItems] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
+    const [pageCount, setPageCount] = useState(0);
     
     useEffect(
         () => {
-            async function getHomeData() {
-                const {data, status} = await API.get("/api/v1/accounts/events", {
-                    headers : {
-                        'Authorization': jwt
-                    }
-                })
-                if (status === RESPONSE_STATUS.OK) {
-                    printMainPage(data)
-                }
-            }
-            getHomeData()
+            getHomeData(0)
         }
         ,[]
     );
 
-    function printMainPage(data) {
+    const getHomeData = async (page) => {
+        const {data, status} = await API.get(`/api/v1/accounts/events?page=${page}`, {
+            headers : {
+                'Authorization': jwt
+            }
+        })
+        if (status === RESPONSE_STATUS.OK) {
+            printMainPage(data)
+            if (totalItems === 0) {
+                await getEventsTotal();
+            }
+        }
+    }
+
+    const printMainPage = (data) => {
         data.map(event => 
             {
                 event.key = data.id;
@@ -37,16 +46,30 @@ const MyEventsListPage = ({jwt}) => {
                 return event;
             }
         )
-        setEvents(data);
-
+        setCurrentItems(data);
     }
 
+    const getEventsTotal = async () => {
+        const {data, status} = await API.get("/api/v1/events/size", {
+            headers : {
+                'Authorization': jwt
+            }
+        });
+        if (status === RESPONSE_STATUS.OK) {
+          setTotalItems(data);
+          setPageCount(Math.ceil(data / itemsPerPage));
+        }
+    }
+
+      // Invoke when user click to request another page.
+    const handlePageClick = async (event, value) => {
+        getHomeData(value - 1);
+    };
+
     return (
-        <Grid container spacing={4}>
-            {events.map(event => (
-                <FeaturedPost key={event.id} post={event} />
-            ))}
-        </Grid>
+        <main>
+            <PaginatedItems handlePageClick={handlePageClick} currentItems={currentItems} pageCount={pageCount} />
+        </main>
     )
 }
 
