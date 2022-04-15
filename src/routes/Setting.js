@@ -12,6 +12,7 @@ import PasswordPage from "../component/PasswordPage";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
 import { useNavigate } from "react-router-dom";
 import MyEventsListPage from "../component/MyEventsListPage";
+import LikesEventsListPage from "../component/LikesEventsListPage";
 
 const Setting = () => {
 
@@ -119,9 +120,14 @@ const Setting = () => {
                                     <PasswordPage accounts={accounts} jwt={jwt} />
                                 )
                             }
-                                                        {
+                            {
                                 (accounts && !profilePage && !passwordPage && myEventsPage && !likeEventsPage) && (
                                     <MyEventsListPage jwt={jwt} />
+                                )
+                            }
+                            {
+                                (accounts && !profilePage && !passwordPage && !myEventsPage && likeEventsPage) && (
+                                    <LikesEventsListPage jwt={jwt} />
                                 )
                             }
                         </Grid>
