@@ -48,7 +48,7 @@ const MyEventsListPage = ({jwt}) => {
     }
 
     const getEventsTotal = async () => {
-        const {data, status} = await API.get("/api/v1/events/size", {
+        const {data, status} = await API.get("/api/v1/accounts/events/size", {
             headers : {
                 'Authorization': jwt
             }
