@@ -10,7 +10,7 @@ import {LOCAL_STORAGE_CONST} from '../common/GlobalConst';
 import API from '../config/customAxios';
 import {RESPONSE_STATUS} from '../common/ResponseStatus';
 import { getAccountsDataByJwt, getLocalStorageData } from '../common/Utils';
-import { ButtonGroup, Menu, MenuItem } from '@mui/material';
+import { ButtonGroup, Menu, MenuItem, TextField } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import QueryString from 'qs';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,8 @@ function Header(props) {
   const [jwt, setJwt] = useState('');
   const [accounts, setAccounts] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [searchTarget, setSearchTarget] = useState('');
 
   const open = Boolean(anchorEl);
 
@@ -114,6 +116,18 @@ function Header(props) {
 
   }
 
+  const onChange = (e) => {
+    const {target: {value}} = e;
+    setSearchTarget(value);
+  }
+
+  const search = async () => {
+    let keyword = encodeURI(searchTarget, "UTF-8");
+    console.log(keyword);
+    const {data, headers, status} = await API.get(`/api/v1/search?keyword=${keyword}`);
+  }
+
+
   return (
     <React.Fragment>
       <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -143,7 +157,13 @@ function Header(props) {
           }
           
         </ButtonGroup>
-        <IconButton>
+        <TextField 
+          variant="standard"
+          placeholder='모임이름, 태그 검색'
+          value={searchTarget}
+          onChange={onChange}
+        />
+        <IconButton onClick={search}>
           <SearchIcon />
         </IconButton>
         {
