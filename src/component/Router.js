@@ -7,6 +7,7 @@ import Login from "../routes/Login";
 import Setting from "../routes/Setting";
 import SignUp from "../routes/SignUp";
 import Events from "../routes/Events";
+import SearchPage from "../routes/SearchPage";
 
 const AppRouter = () => {
 
@@ -21,6 +22,7 @@ const AppRouter = () => {
                 <Route path="/events/update/:events_id" element={<Events flag={'U'}/>} />
                 <Route path="/events/:events_id" element={<EventsDetail />} />
                 <Route path="/events/list" element={<EventsList />} />
+                <Route path="/search" element={<SearchPage />} />
             </Routes>
         </BrowserRouter>
     );

@@ -121,10 +121,10 @@ function Header(props) {
     setSearchTarget(value);
   }
 
-  const search = async () => {
+  const search = (e) => {
+
     let keyword = encodeURI(searchTarget, "UTF-8");
-    console.log(keyword);
-    const {data, headers, status} = await API.get(`/api/v1/search?keyword=${keyword}`);
+    navigate(`/search?keyword=${keyword}`)
   }
 
 
