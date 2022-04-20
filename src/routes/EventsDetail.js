@@ -315,6 +315,32 @@ const EventsDetail = () => {
                                         </div>
                                     </Grid>
                                 </Grid>
+                                
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column'
+                                    }}
+                                >
+                                    <Typography component="h1" variant="h5">
+                                        참여 유저
+                                    </Typography>
+                                    <Grid>
+                                        {
+                                            event.accountsDtos.map((user, idx) => (
+                                                <Button 
+                                                    key={idx}
+                                                    variant="outlined"
+                                                    sx={{
+                                                        m: 1
+                                                      }}
+                                                >
+                                                    {user.name}
+                                                </Button>
+                                            ))
+                                        }  
+                                    </Grid>       
+                                </Box>
                                 {
                                     localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
                                     &&

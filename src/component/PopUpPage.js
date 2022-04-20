@@ -22,7 +22,6 @@ const PopUpPage = ({anchorEl, setAnchorEl}) => {
                 horizontal: 'left',
                 }}
             >
-                {/* <Typography sx={{ p: 2 }}>이메일 인증이 필요합니다.</Typography> */}
                 <Button
                     variant="outlined" 
                     color="error"
