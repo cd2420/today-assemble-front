@@ -1,12 +1,12 @@
 import moment from 'moment';
 import React, {useState, useEffect} from 'react';
-import { RESPONSE_STATUS } from '../common/ResponseStatus';
-import { createEventMainImage } from '../common/Utils';
-import API from '../config/customAxios';
+import { RESPONSE_STATUS } from '../../common/ResponseStatus';
+import { createEventMainImage } from '../../common/Utils';
+import API from '../../config/customAxios';
 import PaginatedItems from './PaginatedItems';
 
 
-const LikesEventsListPage = ({jwt}) => {
+const MyEventsListPage = ({jwt}) => {
 
     // We start with an empty list of items.
     const itemsPerPage = 9;
@@ -22,7 +22,7 @@ const LikesEventsListPage = ({jwt}) => {
     );
 
     const getHomeData = async (page) => {
-        const {data, status} = await API.get(`/api/v1/accounts/likes/events?page=${page}`, {
+        const {data, status} = await API.get(`/api/v1/accounts/events?page=${page}`, {
             headers : {
                 'Authorization': jwt
             }
@@ -48,7 +48,7 @@ const LikesEventsListPage = ({jwt}) => {
     }
 
     const getEventsTotal = async () => {
-        const {data, status} = await API.get("/api/v1/accounts/likes/events/size", {
+        const {data, status} = await API.get("/api/v1/accounts/events/size", {
             headers : {
                 'Authorization': jwt
             }
@@ -71,4 +71,4 @@ const LikesEventsListPage = ({jwt}) => {
     )
 }
 
-export default LikesEventsListPage;
+export default MyEventsListPage;

@@ -1,10 +1,10 @@
 import { LoadingButton } from '@mui/lab';
 import { Button, Grid, TextField, Typography} from '@mui/material';
 import React, {useState, useEffect} from 'react';
-import { RESPONSE_STATUS } from '../common/ResponseStatus';
-import { validatePassword } from '../common/Utils';
-import API from '../config/customAxios';
-import PopUpPage from './PopUpPage';
+import { RESPONSE_STATUS } from '../../common/ResponseStatus';
+import { validatePassword } from '../../common/Utils';
+import API from '../../config/customAxios';
+import PopUpPage from '../popup/PopUpPage';
 
 
 const PasswordPage = ({accounts, jwt}) => {

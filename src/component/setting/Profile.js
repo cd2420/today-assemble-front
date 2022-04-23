@@ -1,12 +1,12 @@
 import { LoadingButton } from '@mui/lab';
 import { FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import React, {useState, useEffect} from 'react';
-import { RESPONSE_STATUS } from '../common/ResponseStatus';
-import { adjustTimeZone, getAge, validateUserName } from '../common/Utils';
-import API from '../config/customAxios';
-import DateComponent from './DateComponent';
-import MainImageUpload from './MainImageUpload';
-import PopUpPage from './PopUpPage';
+import { RESPONSE_STATUS } from '../../common/ResponseStatus';
+import { adjustTimeZone, getAge, validateUserName } from '../../common/Utils';
+import API from '../../config/customAxios';
+import DateComponent from '../date/DateComponent';
+import MainImageUpload from '../pagitaion/MainImageUpload';
+import PopUpPage from '../popup/PopUpPage';
 
 const Profile = ({accounts, jwt}) => {
 

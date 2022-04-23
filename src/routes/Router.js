@@ -1,13 +1,13 @@
 import React from "react"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import EventsDetail from "../routes/EventsDetail";
-import EventsList from "../routes/EventsList";
-import Home from "../routes/Home";
-import Login from "../routes/Login";
-import Setting from "../routes/Setting";
-import SignUp from "../routes/SignUp";
-import Events from "../routes/Events";
-import SearchPage from "../routes/SearchPage";
+import EventsDetail from "./EventsDetail";
+import EventsList from "./EventsList";
+import Home from "./Home";
+import Login from "./Login";
+import Setting from "./Setting";
+import SignUp from "./SignUp";
+import Events from "./Events";
+import SearchPage from "./SearchPage";
 
 const AppRouter = () => {
 

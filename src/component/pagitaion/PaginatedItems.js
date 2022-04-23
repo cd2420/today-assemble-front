@@ -1,7 +1,7 @@
 import { Grid, Pagination } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
-import FeaturedPost from './FeaturedPost';
+import FeaturedPost from '../FeaturedPost';
 
 const Items = ({ currentItems }) => {
   return (

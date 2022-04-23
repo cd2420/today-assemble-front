@@ -1,56 +1,49 @@
 import React, {useState, useEffect} from "react";
-import API from "../config/customAxios";
+import API from "../../config/customAxios";
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {RESPONSE_STATUS} from "../common/ResponseStatus";
+import {RESPONSE_STATUS} from "../../common/ResponseStatus";
 import FormHelperText from '@mui/material/FormHelperText';
-import {ERROR_CODE} from "../common/GlobalConst";
+import {ERROR_CODE} from "../../common/GlobalConst";
 import { DateTimePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
-import {  FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import {useNavigate} from "react-router-dom";
-import MainImageUpload from "./MainImageUpload";
-import DaumMap from "./DaumMap";
-import TakeTime from "./TakeTime";
-import TagsComponent from "./TagsComponent";
-import { adjustTimeZone } from "../common/Utils";
+import MainImageUpload from "../pagitaion/MainImageUpload";
+import DaumMap from "../DaumMap";
+import TakeTime from "../date/TakeTime";
+import TagsComponent from "../TagsComponent";
+import { adjustTimeZone } from "../../common/Utils";
+import PopUpPage from "../popup/PopUpPage";
 
 
 
-const EventsUpdate = ({events, jwt}) => {
+const EventsMaker = ({jwt}) => {
 
     const navigate = useNavigate();
+    const tDate = new Date();
+    tDate.setMinutes(0);
+    tDate.setHours(tDate.getHours() + 1);
 
-    const getMainImg = (data) => {
-        const check_main = data.filter(d => d.imagesType === 'MAIN');
-        if (!data ||  check_main.length === 0 || check_main[0].image === '') {
-            return []
-        } else {
-           return data.filter(d => d.imagesType === 'MAIN').map(d => ({'data_url': d.image}))
-        }
-    }
+    const [anchorEl, setAnchorEl] = useState(null);
 
-    const [mainImg, setMainImg] = useState(getMainImg(events.eventsImagesDtos));
-    const [eventName, setEventName] = useState(events.name);
-    const [description, setDescription] = useState(events.description);
-    const [tags, setTags] = useState(events.tagsDtos.map(tag => (tag.name)));
-    const [maxMembers, setMaxMembers] = useState(events.maxMembers);
-    const [eventsType, setEventsType] = useState(events.eventsType);
+    const [profileImg, setProfileImg] = useState([]);
+    const [eventName, setEventName] = useState('');
+    const [description, setDescription] = useState('');
+    const [tags, setTags] = useState([]);
+    const [maxMembers, setMaxMembers] = useState(1);
+    const [eventsType, setEventsType] = useState('OFFLINE');
 
-    const [eventsTime, setEventsTime] = useState(new Date(events.eventsTime));
+    const [eventsTime, setEventsTime] = useState(new Date(tDate));
     const [eventsTimeError, setEventsTimeError] = useState(false);
     const [eventsTimeErrorText, setEventsTimeErrorText] = useState('');
 
 
-    const [takeTime, setTakeTime] = useState(events.takeTime);
-    const [_address, setAddress] = useState({
-        address: events.address
-        , longitude: events.longitude
-        , latitude: events.latitude
-    });
+    const [takeTime, setTakeTime] = useState(1);
+    const [_address, setAddress] = useState({});
     const [createButton, setCreateButton] = useState(true);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -68,10 +61,11 @@ const EventsUpdate = ({events, jwt}) => {
         } else {
             setCreateButton(true)
         }
+
     }
 
-    const mainImgUpload = (imageList, addUpdateIndex) => {
-        setMainImg(imageList);
+    const upload = (imageList, addUpdateIndex) => {
+        setProfileImg(imageList);
     }
 
     const onChange = (event) => {
@@ -105,11 +99,11 @@ const EventsUpdate = ({events, jwt}) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         const req = makeReq();
-
+        const currentTarget = event.currentTarget;
         try {
-            setIsLoading(true);
-            const {data, status} = await API.put(
+            const {data, status} = await API.post(
                 `/api/v1/events`
                 , JSON.stringify(req)
                 , {
@@ -123,22 +117,29 @@ const EventsUpdate = ({events, jwt}) => {
             }
 
         } catch(e) {
-            const {errorCode, msg} = e.response.data;
-            console.log(errorCode, msg);
-            if (errorCode === ERROR_CODE.DATE_OVERLAP) {
-                setEventsTimeError(true)
-                setEventsTimeErrorText(msg)
+            const errorStatus = e.response.status;
+            if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {
+                setAnchorEl(currentTarget);
+            } else {
+                const {errorCode, msg} = e.response.data;
+                console.log(errorCode, msg);
+                if (errorCode === ERROR_CODE.DATE_OVERLAP) {
+                    setEventsTimeError(true)
+                    setEventsTimeErrorText(msg)
+                }
             }
+            
             setIsLoading(false);
         }
     }
 
     const makeReq = () => {
         const {address, longitude, latitude} = _address;
+        const tagsSet = tags.map(tag => (
+            {"name" : tag}
+        ))
         let result = {
-            id: events.id
-            , accountsId: events.accountsId
-            , name: eventName
+            name: eventName
             , description
             , maxMembers
             , eventsType
@@ -147,25 +148,25 @@ const EventsUpdate = ({events, jwt}) => {
             , address
             , longitude
             , latitude
-            , tags
+            , tagsSet
         }
+
         // JSON.stringfy 할때 timeZone에 의해 시간이 바뀌는 현상 수정
         adjustTimeZone(result.eventsTime);
 
-        if (mainImg.length > 0) {
-            const image = mainImg[0].data_url;
-            result.images = events.eventsImagesDtos.concat([{
+        if (profileImg.length > 0) {
+            const image = profileImg[0].data_url;
+            result.eventsImagesSet = [{
                 imagesType: 'MAIN'
                 , image
-            }]);
-        } else {
-            result.images = events.eventsImagesDtos.filter(image => {return image.imagesType === 'SUB'})
+            }]
         }
 
 
         return result;
 
     }
+
 
 
     return (
@@ -180,19 +181,13 @@ const EventsUpdate = ({events, jwt}) => {
                 }}
             >
                 <Typography component="h1" variant="h5">
-                    모임수정
+                    모임생성
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
-                        {
-                            mainImg
-                            &&
-                            (
-                                <Grid item xs={12}>
-                                    <MainImageUpload upload={mainImgUpload} profileImg={mainImg}/>            
-                                </Grid>
-                            )
-                        }
+                        <Grid item xs={12}>
+                            <MainImageUpload upload={upload} profileImg={profileImg}/>            
+                        </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 autoComplete="eventName"
@@ -204,6 +199,8 @@ const EventsUpdate = ({events, jwt}) => {
                                 label="모임 제목"
                                 value={eventName}
                                 onChange={onChange}
+                                // error={eventNameError}
+                                // helperText={eventNameErrorText}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -219,7 +216,7 @@ const EventsUpdate = ({events, jwt}) => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TagsComponent setTags={setTags} defaultValue={tags}/>
+                            <TagsComponent setTags={setTags} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
@@ -270,12 +267,11 @@ const EventsUpdate = ({events, jwt}) => {
                         <Grid item xs={12}>
                             <TakeTime 
                                 onChange={onChange}
-                                value={takeTime}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             모임 장소
-                            <DaumMap onChange={onChange} address={_address} isCUPage={true}/>
+                            <DaumMap onChange={onChange} isCUPage={true}/>
                         </Grid>
                     </Grid>
                     <LoadingButton
@@ -287,8 +283,9 @@ const EventsUpdate = ({events, jwt}) => {
                         disabled={createButton}
                         loading={isLoading}
                     >
-                        모임 수정
+                        모임 생성
                     </LoadingButton>
+                    <PopUpPage anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
                 </Box>
             </Box>
         </Container>
@@ -297,4 +294,4 @@ const EventsUpdate = ({events, jwt}) => {
     );
 }
 
-export default EventsUpdate;
+export default EventsMaker;
