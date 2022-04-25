@@ -5,7 +5,7 @@ import { RESPONSE_STATUS } from '../../common/ResponseStatus';
 import { adjustTimeZone, getAge, validateUserName } from '../../common/Utils';
 import API from '../../config/customAxios';
 import DateComponent from '../date/DateComponent';
-import MainImageUpload from '../pagitaion/MainImageUpload';
+import MainImageUpload from '../pagination/MainImageUpload';
 import PopUpPage from '../popup/PopUpPage';
 
 const Profile = ({accounts, jwt}) => {

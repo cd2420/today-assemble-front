@@ -10,11 +10,11 @@ import { RESPONSE_STATUS } from "../common/ResponseStatus";
 import { createEventMainImage, createEventSubImage } from "../common/Utils";
 import DaumMap from "../component/DaumMap";
 import Header from "../component/Header";
-import MainFeaturedPost from "../component/MainFeaturedPost";
+import MainFeaturedPost from "../component/image/MainFeaturedPost";
 import API from "../config/customAxios";
 import _ from 'lodash';
-import SubImagesArea from "../component/SubImagesArea";
-import PopUpPage from "../component/PopUpPage";
+import SubImagesArea from "../component/image/SubImagesArea";
+import PopUpPage from "../component/popup/PopUpPage";
 
 const EventsDetail = () => {
     

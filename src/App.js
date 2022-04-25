@@ -1,5 +1,6 @@
 import React from 'react';
-import AppRouter from './component/Router';
+import AppRouter from './routes/Router';
+
 
 function App() {
 

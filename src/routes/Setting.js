@@ -7,12 +7,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getAccountsDataByJwt, getLocalStorageData } from "../common/Utils";
 import { Box, Button, ButtonGroup, Grid} from "@mui/material";
 
-import Profile from "../component/Profile";
-import PasswordPage from "../component/PasswordPage";
+import MyEventsListPage from "../component/pagination/MyEventsListPage";
+import LikesEventsListPage from "../component/pagination/LikesEventsListPage";
+
+import Profile from "../component/setting/Profile";
+import PasswordPage from "../component/setting/PasswordPage";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
 import { useNavigate } from "react-router-dom";
-import MyEventsListPage from "../component/MyEventsListPage";
-import LikesEventsListPage from "../component/LikesEventsListPage";
+
+
 
 const Setting = () => {
 

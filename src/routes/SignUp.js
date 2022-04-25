@@ -5,7 +5,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Header from "../component/Header";
 import HEADER_SECTION from "../common/HeaderSection";
 import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
-import DateComponent from "../component/DateComponent";
+import DateComponent from "../component/date/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
 import { adjustTimeZone, getAge, getLocalStorageData, validatePassword, validateUserName } from "../common/Utils";
 import { LoadingButton } from "@mui/lab";

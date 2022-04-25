@@ -12,7 +12,7 @@ import { DateTimePicker, LoadingButton, LocalizationProvider } from "@mui/lab";
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import {useNavigate} from "react-router-dom";
-import MainImageUpload from "../pagitaion/MainImageUpload";
+import MainImageUpload from "../pagination/MainImageUpload";
 import DaumMap from "../DaumMap";
 import TakeTime from "../date/TakeTime";
 import TagsComponent from "../TagsComponent";
