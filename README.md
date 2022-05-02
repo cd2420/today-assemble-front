@@ -30,3 +30,7 @@
 
 - 모임 상세 페이지 (내가 방장)
 ![](image_folder_OnlyGitReadme/image_meeting_detail_mine.png)
+
+
+## 없는 페이지
+- 알림 페이지 (ex. 상대방이 초대하면 알림이 뜨도록) / 초대 수락 및 거절 페이지
