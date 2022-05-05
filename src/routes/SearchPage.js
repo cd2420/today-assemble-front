@@ -74,15 +74,11 @@ const SearchPage = () => {
     const theme = createTheme();
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Container maxWidth="lg">
-                <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
-                <main>
-                    <PaginatedItems handlePageClick={handlePageClick} currentItems={currentItems} pageCount={pageCount} />
-                </main>
-            </Container>
-        </ThemeProvider>
+
+        <main>
+            <PaginatedItems handlePageClick={handlePageClick} currentItems={currentItems} pageCount={pageCount} />
+        </main>
+
 
     );
 }

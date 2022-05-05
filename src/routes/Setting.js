@@ -88,56 +88,52 @@ const Setting = () => {
     const theme = createTheme();
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Container maxWidth="lg">
-                <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
-                <Container component="main" >
-                    <Grid container spacing={1}>
-                        <Grid item xs={3}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    '& > *': {
-                                    m: 1,
-                                    },
-                                }}
-                            >
-                                <ButtonGroup
-                                    orientation="vertical"
-                                    aria-label="vertical outlined button group"
-                                    
-                                >
-                                {buttons}
-                                </ButtonGroup>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={9}>
-                            {
-                                (accounts && profilePage && !passwordPage && !myEventsPage && !likeEventsPage) && (
-                                    <Profile accounts={accounts} jwt={jwt} />
-                                )
-                            }
-                            {
-                                (accounts && !profilePage && passwordPage && !myEventsPage && !likeEventsPage) && (
-                                    <PasswordPage accounts={accounts} jwt={jwt} />
-                                )
-                            }
-                            {
-                                (accounts && !profilePage && !passwordPage && myEventsPage && !likeEventsPage) && (
-                                    <MyEventsListPage jwt={jwt} />
-                                )
-                            }
-                            {
-                                (accounts && !profilePage && !passwordPage && !myEventsPage && likeEventsPage) && (
-                                    <LikesEventsListPage jwt={jwt} />
-                                )
-                            }
-                        </Grid>
-                    </Grid>
-                </Container>
-            </Container>
-        </ThemeProvider>
+
+        <Container component="main" >
+            <Grid container spacing={1}>
+                <Grid item xs={3}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            '& > *': {
+                            m: 1,
+                            },
+                        }}
+                    >
+                        <ButtonGroup
+                            orientation="vertical"
+                            aria-label="vertical outlined button group"
+                            
+                        >
+                        {buttons}
+                        </ButtonGroup>
+                    </Box>
+                </Grid>
+                <Grid item xs={9}>
+                    {
+                        (accounts && profilePage && !passwordPage && !myEventsPage && !likeEventsPage) && (
+                            <Profile accounts={accounts} jwt={jwt} />
+                        )
+                    }
+                    {
+                        (accounts && !profilePage && passwordPage && !myEventsPage && !likeEventsPage) && (
+                            <PasswordPage accounts={accounts} jwt={jwt} />
+                        )
+                    }
+                    {
+                        (accounts && !profilePage && !passwordPage && myEventsPage && !likeEventsPage) && (
+                            <MyEventsListPage jwt={jwt} />
+                        )
+                    }
+                    {
+                        (accounts && !profilePage && !passwordPage && !myEventsPage && likeEventsPage) && (
+                            <LikesEventsListPage jwt={jwt} />
+                        )
+                    }
+                </Grid>
+            </Grid>
+        </Container>
+
 
     );
 

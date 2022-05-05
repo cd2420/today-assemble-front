@@ -8,11 +8,14 @@ import Setting from "./Setting";
 import SignUp from "./SignUp";
 import Events from "./Events";
 import SearchPage from "./SearchPage";
+import HEADER_SECTION from "../common/HeaderSection";
+import Header from "../component/Header";
 
 const AppRouter = () => {
 
     return (
         <BrowserRouter>
+            <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
             <Routes>
                 <Route path="/home" element={<Home />} />
                 <Route path="/login" element={<Login />} />

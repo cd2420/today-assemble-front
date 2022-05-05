@@ -250,175 +250,172 @@ const EventsDetail = () => {
     const theme = createTheme();
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container maxWidth="lg">
-                <CssBaseline />
-                <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
-                
-                    {
-                        event &&
-                        (   
-                            <Container component="main" >
-                                <MainFeaturedPost post={event} />
-                                <SubImagesArea event={event} isHost={isHost} upload={upload} removeEventsSubImg={removeEventsSubImg}/>
-                                <Grid container spacing={2} >
-                                    <Grid 
-                                        item
-                                        xs={4}
-                                    >
-                                        <Typography>
-                                            모임 일정
-                                        </Typography>
-                                        <Box 
-                                           sx={{
-                                            display: 'flex',
-                                            alignItems: 'space-evenly',
-                                            flexDirection: 'column',
-                                            p: 1,
-                                            m: 1
-                                          }}
-                                        >
-                                            <Typography>
-                                                시작 시간 : {moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분')}
-                                            </Typography>
-                                            <Typography >
-                                                종료 시간 : {showEndTime()}
-                                            </Typography>
-                                            <Typography >
-                                                참여인원 : {event.nowMembers} / {event.maxMembers}
-                                            </Typography>
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Typography>
-                                            주소: {address.address}
-                                        </Typography>
-                                        <DaumMap address={address}/>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <Typography>
-                                            태그
-                                        </Typography>
-                                        <div>
-                                            {event.tagsDtos.map((tag, idx) => (
-                                                <Button 
-                                                    variant="outlined" 
-                                                    key={idx}
-                                                    sx={{ m: 0.5 }}
-                                                    style={{
-                                                        borderRadius: 20
-                                                    }}
-                                                >
-                                                #{tag.name}
-                                                </Button>
-                                            ))}
-                                        </div>
-                                    </Grid>
-                                </Grid>
-                                
-                                <Box
+
+            <>
+            {
+                event &&
+                (   
+                    <Container component="main" >
+                        <MainFeaturedPost post={event} />
+                        <SubImagesArea event={event} isHost={isHost} upload={upload} removeEventsSubImg={removeEventsSubImg}/>
+                        <Grid container spacing={2} >
+                            <Grid 
+                                item
+                                xs={4}
+                            >
+                                <Typography>
+                                    모임 일정
+                                </Typography>
+                                <Box 
                                     sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column'
+                                    display: 'flex',
+                                    alignItems: 'space-evenly',
+                                    flexDirection: 'column',
+                                    p: 1,
+                                    m: 1
                                     }}
                                 >
-                                    <Typography component="h1" variant="h5">
-                                        참여 유저
+                                    <Typography>
+                                        시작 시간 : {moment(event.eventsTime).format('YYYY-MM-DD HH시 mm분')}
                                     </Typography>
-                                    <Grid>
-                                        {
-                                            event.accountsDtos.map((user, idx) => (
-                                                <Button 
-                                                    key={idx}
-                                                    variant="outlined"
-                                                    sx={{
-                                                        m: 1
-                                                      }}
-                                                >
-                                                    {user.name}
-                                                </Button>
-                                            ))
-                                        }  
-                                    </Grid>       
+                                    <Typography >
+                                        종료 시간 : {showEndTime()}
+                                    </Typography>
+                                    <Typography >
+                                        참여인원 : {event.nowMembers} / {event.maxMembers}
+                                    </Typography>
                                 </Box>
-                                {
-                                    localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
-                                    &&
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            '& > *': {
-                                            m: 3,
-                                            },
-                                        }}
-                                    >
-                                        <ButtonGroup 
-                                            fullWidth
-                                            variant="text" 
-                                            aria-label="text button group"
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography>
+                                    주소: {address.address}
+                                </Typography>
+                                <DaumMap address={address}/>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Typography>
+                                    태그
+                                </Typography>
+                                <div>
+                                    {event.tagsDtos.map((tag, idx) => (
+                                        <Button 
+                                            variant="outlined" 
+                                            key={idx}
+                                            sx={{ m: 0.5 }}
+                                            style={{
+                                                borderRadius: 20
+                                            }}
                                         >
-                                            <Button 
-                                                key="1" 
-                                                variant={event.isLikes ? "contained" : "outlined"}
-                                                onClick={likes}
-                                            >
-                                                좋아요 ({event.likesAccountsDtos ? event.likesAccountsDtos.length : 0 })
-                                            </Button>
-                                            <Button 
-                                                key="2" 
-                                                variant={event.isParticipate ? "contained" : "outlined"}
-                                                color={event.isParticipate ? "error" : "primary"}
-                                                name="deleteBtn"
-                                                onClick={isHost ? handleClickOpen : participateEventsManage}
-                                                disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
-                                            >
-                                                { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
-                                            </Button>
-                                            {
-                                                anchorEl &&
-                                                <PopUpPage anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
-                                            }
-                                            
-                                            <Dialog onClose={handleClose} open={dialogOpen}>
-                                                <DialogTitle onClose={handleClose}>
-                                                    모임 삭제
-                                                </DialogTitle>
-                                                <DialogContent>
-                                                    <Typography gutterBottom>
-                                                        정말로 모임을 삭제 하시겠습니까?
-                                                    </Typography>
-                                                </DialogContent>
+                                        #{tag.name}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </Grid>
+                        </Grid>
+                        
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column'
+                            }}
+                        >
+                            <Typography component="h1" variant="h5">
+                                참여 유저
+                            </Typography>
+                            <Grid>
+                                {
+                                    event.accountsDtos.map((user, idx) => (
+                                        <Button 
+                                            key={idx}
+                                            variant="outlined"
+                                            sx={{
+                                                m: 1
+                                                }}
+                                        >
+                                            {user.name}
+                                        </Button>
+                                    ))
+                                }  
+                            </Grid>       
+                        </Box>
+                        {
+                            localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
+                            &&
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    '& > *': {
+                                    m: 3,
+                                    },
+                                }}
+                            >
+                                <ButtonGroup 
+                                    fullWidth
+                                    variant="text" 
+                                    aria-label="text button group"
+                                >
+                                    <Button 
+                                        key="1" 
+                                        variant={event.isLikes ? "contained" : "outlined"}
+                                        onClick={likes}
+                                    >
+                                        좋아요 ({event.likesAccountsDtos ? event.likesAccountsDtos.length : 0 })
+                                    </Button>
+                                    <Button 
+                                        key="2" 
+                                        variant={event.isParticipate ? "contained" : "outlined"}
+                                        color={event.isParticipate ? "error" : "primary"}
+                                        name="deleteBtn"
+                                        onClick={isHost ? handleClickOpen : participateEventsManage}
+                                        disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
+                                    >
+                                        { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
+                                    </Button>
+                                    {
+                                        anchorEl &&
+                                        <PopUpPage anchorEl={anchorEl} setAnchorEl={setAnchorEl}/>
+                                    }
+                                    
+                                    <Dialog onClose={handleClose} open={dialogOpen}>
+                                        <DialogTitle onClose={handleClose}>
+                                            모임 삭제
+                                        </DialogTitle>
+                                        <DialogContent>
+                                            <Typography gutterBottom>
+                                                정말로 모임을 삭제 하시겠습니까?
+                                            </Typography>
+                                        </DialogContent>
 
-                                                <DialogActions>
-                                                    <Button variant="contained" color="error" onClick={removeEvents}>삭제</Button>
-                                                    <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
-                                                </DialogActions>
-                                            </Dialog>
+                                        <DialogActions>
+                                            <Button variant="contained" color="error" onClick={removeEvents}>삭제</Button>
+                                            <Button variant="contained" color="primary" onClick={handleClose}>닫기</Button>
+                                        </DialogActions>
+                                    </Dialog>
 
-                                            {
-                                                isHost 
-                                                && 
-                                                <Button
-                                                    key="3" 
-                                                    variant="outlined"
-                                                    onClick={() => {navigate(`/events/update/${event.id}`)}}
-                                                >
-                                                    수정
-                                                </Button>
+                                    {
+                                        isHost 
+                                        && 
+                                        <Button
+                                            key="3" 
+                                            variant="outlined"
+                                            onClick={() => {navigate(`/events/update/${event.id}`)}}
+                                        >
+                                            수정
+                                        </Button>
 
-                                            }
-                                            
-                                        </ButtonGroup>
-                                    </Box>
-                                }
-                                
-                            </Container>
-                        )
-                    }
-            </Container>
-        </ThemeProvider>
+                                    }
+                                    
+                                </ButtonGroup>
+                            </Box>
+                        }
+                        
+                    </Container>
+                )
+            }
+            </>
+
     )
 }
 

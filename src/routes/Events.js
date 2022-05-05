@@ -48,26 +48,21 @@ const Events= ({flag}) => {
     const theme = createTheme();
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Container maxWidth="lg">
-                <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
-                <main>
-                    {
-                        flag === 'C'
-                        ? 
-                        (
-                            <EventsMaker jwt={jwt}/>
-                        )
-                        :
-                        (
-                            events &&
-                            <EventsUpdate events={events} jwt={jwt}/>
-                        )
-                    }
-                </main>
-            </Container>
-        </ThemeProvider>
+
+        <main>
+            {
+                flag === 'C'
+                ? 
+                (
+                    <EventsMaker jwt={jwt}/>
+                )
+                :
+                (
+                    events &&
+                    <EventsUpdate events={events} jwt={jwt}/>
+                )
+            }
+        </main>
 
     );
 }

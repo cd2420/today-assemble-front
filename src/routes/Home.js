@@ -40,19 +40,15 @@ const Home = () => {
     const theme = createTheme();
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Container maxWidth="lg">
-                <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
-                <main>
-                    <Grid container spacing={4}>
-                        {events.map(event => (
-                            <FeaturedPost key={event.id} post={event} />
-                        ))}
-                    </Grid>
-                </main>
-            </Container>
-        </ThemeProvider>
+
+        <main>
+            <Grid container spacing={4}>
+                {events.map(event => (
+                    <FeaturedPost key={event.id} post={event} />
+                ))}
+            </Grid>
+        </main>
+
 
     );
 }
