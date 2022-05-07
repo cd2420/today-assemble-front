@@ -117,17 +117,21 @@ const SignUp = () => {
             const accounts = getAccounts();
             const {status, headers} = await API.post("/api/v1/accounts/sign-up", JSON.stringify(accounts));
             if (status === RESPONSE_STATUS.OK) {
+                setIsLoading(false);
                 localStorage.setItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN, headers.authorization);
-                navigate('/home');
+                navigate(-1);
+            } else {
+                setIsLoading(false);
             }
         } catch (e) {
+            setIsLoading(false);
             const {errorCode, msg} = e.response.data;
             if (errorCode === ERROR_CODE.ALREADY_EXISTS_USER) {
                 setEmailError(true);
                 setEmailErrorText(msg);
             }
         }
-        setIsLoading(false);
+        
     };
 
     const getAccounts = () => {

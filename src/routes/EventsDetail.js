@@ -1,22 +1,20 @@
-import { ThemeProvider } from "@emotion/react";
-import { Button, ButtonGroup, Container, createTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
+
+import { Button, ButtonGroup, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import moment from "moment";
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom";
 import { LOCAL_STORAGE_CONST } from "../common/GlobalConst";
-import HEADER_SECTION from "../common/HeaderSection";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
-import { createEventMainImage, createEventSubImage } from "../common/Utils";
+import { createEventMainImage, createEventSubImage, getLocalStorageData } from "../common/Utils";
 import DaumMap from "../component/DaumMap";
-import Header from "../component/Header";
 import MainFeaturedPost from "../component/image/MainFeaturedPost";
 import API from "../config/customAxios";
 import _ from 'lodash';
 import SubImagesArea from "../component/image/SubImagesArea";
 import PopUpPage from "../component/popup/PopUpPage";
 
-const EventsDetail = () => {
+const EventsDetail = ({accounts}) => {
     
     const params = useParams();
     const navigate = useNavigate();
@@ -27,14 +25,22 @@ const EventsDetail = () => {
     const [isHost, setIsHost] = useState(false);
     const [address, setAddress] = useState({});
     const [dialogOpen, setDialogOpen] = useState(false);
+
+    const [isParticipate, setIsParticipate] = useState(false);
+    const [isLikes, setIsLikes] = useState(false);
     
     useEffect(() => {
-        
-        if (params.events_id) {
-            getEvent(params.events_id)
+        if (event == null) {
+            if (params.events_id) {
+                getEvent(params.events_id)
+            }
+        } else {
+            if (accounts) {
+                checkThisEventWithAccount(event, accounts);
+            }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [event])
 
     const getEvent = async (eventId) => {
         try {
@@ -42,7 +48,6 @@ const EventsDetail = () => {
             if (status === RESPONSE_STATUS.OK) {
                 if (data) {
                     settingImageAndAddress(data);
-                    await checkThisEventWithAccount(data);
                     setEvent(data);
                 }
             }
@@ -65,33 +70,45 @@ const EventsDetail = () => {
         });
     }
 
-    const checkThisEventWithAccount = async (event_data) => {
-        const jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN);
-        if (jwt) {
-            const {data, status}  = await API.get(
-                            `/api/v1/accounts`
-                            , {
-                                headers : {
-                                    'Authorization': jwt
-                                }
-                            });
-            if (status === RESPONSE_STATUS.OK) {
-                if (event_data.hostAccountsId === data.id) {
-                    setIsHost(true);
+    const checkThisEventWithAccount = async (event_data, accounts) => {
+
+        if (event_data.hostAccountsId === accounts.id) {
+            setIsHost(true);
+        }
+
+        let {_jwt, is_ok} = getLocalStorageData();
+
+        try {
+            
+            if (_jwt && is_ok) {
+                const result1  = await API.get(`/api/v1/accounts/events/${event_data.id}`, {
+                    headers : {
+                        'Authorization': _jwt
+                    }
+                })
+
+                if (result1.data && result1.status === RESPONSE_STATUS.OK) {
+                    setIsParticipate(true);
+                } else {
+                    setIsParticipate(false);
                 }
 
-                if (data.likesDtos) {
-                    if (data.likesDtos.filter(likesDto => likesDto.eventsDto.id === event_data.id).length > 0) {
-                        event_data.isLikes = true;
+                const result2  = await API.get(`/api/v1/accounts/likes/${event_data.id}`, {
+                    headers : {
+                        'Authorization': _jwt
                     }
-                }
+                })
 
-                if (data.eventsDtos) {
-                    if (data.eventsDtos.filter(eventsDto => eventsDto.id === event_data.id).length  > 0) {
-                        event_data.isParticipate = true;
-                    }
+                if (result2.data && result2.status === RESPONSE_STATUS.OK) {
+                    setIsLikes(true);
+                } else {
+                    setIsLikes(false);
                 }
             }
+            
+        } catch(e) {
+            console.log(e);
+            navigate(-1);
         }
     }
 
@@ -121,7 +138,7 @@ const EventsDetail = () => {
                                                 });
                 if (status === RESPONSE_STATUS.OK) {
                     settingImageAndAddress(data);
-                    await checkThisEventWithAccount(data);
+                    // await checkThisEventWithAccount(data, accounts);
                     setEvent(data);
                 }
 
@@ -163,7 +180,7 @@ const EventsDetail = () => {
                                 });
                 if (status === RESPONSE_STATUS.OK) {
                     settingImageAndAddress(data);
-                    await checkThisEventWithAccount(data);
+                    // await checkThisEventWithAccount(data, accounts);
                     setEvent(data);
                 }
             }
@@ -193,7 +210,7 @@ const EventsDetail = () => {
                                 });
                 if (status === RESPONSE_STATUS.OK) {
                     settingImageAndAddress(data);
-                    await checkThisEventWithAccount(data);
+                    // await checkThisEventWithAccount(data, accounts);
                     setEvent(data);
                 }
             }
@@ -219,7 +236,7 @@ const EventsDetail = () => {
                                 });
                 if (status === RESPONSE_STATUS.OK) {
                     settingImageAndAddress(data.returnDto);
-                    await checkThisEventWithAccount(data.returnDto);
+                    // await checkThisEventWithAccount(data.returnDto, accounts);
                     setEvent(data.returnDto);
                 }
             }
@@ -246,9 +263,6 @@ const EventsDetail = () => {
         await participateEventsManage(e);
         navigate('/home');
     }
-
-    const theme = createTheme();
-
     return (
 
             <>
@@ -358,20 +372,20 @@ const EventsDetail = () => {
                                 >
                                     <Button 
                                         key="1" 
-                                        variant={event.isLikes ? "contained" : "outlined"}
+                                        variant={isLikes ? "contained" : "outlined"}
                                         onClick={likes}
                                     >
                                         좋아요 ({event.likesAccountsDtos ? event.likesAccountsDtos.length : 0 })
                                     </Button>
                                     <Button 
                                         key="2" 
-                                        variant={event.isParticipate ? "contained" : "outlined"}
-                                        color={event.isParticipate ? "error" : "primary"}
+                                        variant={isParticipate ? "contained" : "outlined"}
+                                        color={isParticipate ? "error" : "primary"}
                                         name="deleteBtn"
                                         onClick={isHost ? handleClickOpen : participateEventsManage}
-                                        disabled = {!event.isParticipate && event.nowMembers >= event.maxMembers}
+                                        disabled = {!isParticipate && event.nowMembers >= event.maxMembers}
                                     >
-                                        { isHost ? "모임삭제" : (event.isParticipate ? "참가취소" : "모임참가")}
+                                        { isHost ? "모임삭제" : (isParticipate ? "참가취소" : "모임참가")}
                                     </Button>
                                     {
                                         anchorEl &&
