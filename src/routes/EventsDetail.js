@@ -23,7 +23,7 @@ const EventsDetail = ({accounts}) => {
 
     const [event, setEvent] = useState(null);
     const [isHost, setIsHost] = useState(false);
-    const [address, setAddress] = useState({});
+    const [address, setAddress] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const [isParticipate, setIsParticipate] = useState(false);
@@ -35,6 +35,7 @@ const EventsDetail = ({accounts}) => {
                 getEvent(params.events_id)
             }
         } else {
+            settingImageAndAddress(event);
             if (accounts) {
                 checkThisEventWithAccount(event, accounts);
             }
@@ -47,7 +48,6 @@ const EventsDetail = ({accounts}) => {
             const {data, status}  = await API.get(`/api/v1/events/${eventId}`);
             if (status === RESPONSE_STATUS.OK) {
                 if (data) {
-                    settingImageAndAddress(data);
                     setEvent(data);
                 }
             }
@@ -137,8 +137,6 @@ const EventsDetail = ({accounts}) => {
                                                     }
                                                 });
                 if (status === RESPONSE_STATUS.OK) {
-                    settingImageAndAddress(data);
-                    // await checkThisEventWithAccount(data, accounts);
                     setEvent(data);
                 }
 
@@ -179,8 +177,6 @@ const EventsDetail = ({accounts}) => {
                                     }
                                 });
                 if (status === RESPONSE_STATUS.OK) {
-                    settingImageAndAddress(data);
-                    // await checkThisEventWithAccount(data, accounts);
                     setEvent(data);
                 }
             }
@@ -209,8 +205,6 @@ const EventsDetail = ({accounts}) => {
                                     }
                                 });
                 if (status === RESPONSE_STATUS.OK) {
-                    settingImageAndAddress(data);
-                    // await checkThisEventWithAccount(data, accounts);
                     setEvent(data);
                 }
             }
@@ -235,8 +229,6 @@ const EventsDetail = ({accounts}) => {
                                     }
                                 });
                 if (status === RESPONSE_STATUS.OK) {
-                    settingImageAndAddress(data.returnDto);
-                    // await checkThisEventWithAccount(data.returnDto, accounts);
                     setEvent(data.returnDto);
                 }
             }
@@ -270,8 +262,17 @@ const EventsDetail = ({accounts}) => {
                 event &&
                 (   
                     <Container component="main" >
-                        <MainFeaturedPost post={event} />
-                        <SubImagesArea event={event} isHost={isHost} upload={upload} removeEventsSubImg={removeEventsSubImg}/>
+                        {
+                            event.mainImage
+                            &&
+                            <MainFeaturedPost post={event} />
+                        }
+                        {
+                            event.subImage
+                            &&
+                            <SubImagesArea event={event} isHost={isHost} upload={upload} removeEventsSubImg={removeEventsSubImg}/>
+                        }
+                        
                         <Grid container spacing={2} >
                             <Grid 
                                 item
@@ -301,10 +302,16 @@ const EventsDetail = ({accounts}) => {
                                 </Box>
                             </Grid>
                             <Grid item xs={4}>
-                                <Typography>
-                                    주소: {address.address}
-                                </Typography>
-                                <DaumMap address={address}/>
+                                {
+                                    address
+                                    &&
+                                    <>
+                                        <Typography>
+                                        주소: {address.address}
+                                        </Typography>
+                                        <DaumMap address={address}/>
+                                    </>
+                                }
                             </Grid>
                             <Grid item xs={4}>
                                 <Typography>
@@ -424,7 +431,6 @@ const EventsDetail = ({accounts}) => {
                                 </ButtonGroup>
                             </Box>
                         }
-                        
                     </Container>
                 )
             }
