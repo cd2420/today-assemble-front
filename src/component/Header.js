@@ -16,7 +16,7 @@ import QueryString from 'qs';
 import { useNavigate } from 'react-router-dom';
 
 function Header(props) {
-  const {sections, title} = props;
+  const {sections, title, _getAccounts} = props;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -76,6 +76,7 @@ function Header(props) {
         setAccounts(data);
         setJwt(_jwt);
         setIsAuthorized(true);
+        _getAccounts(data);
       } else {
         dataInit();
         navigate('/login');
@@ -113,6 +114,7 @@ function Header(props) {
     setIsAuthorized(false);
     setJwt('');
     setAccounts(null);
+    _getAccounts(null);
 
   }
 

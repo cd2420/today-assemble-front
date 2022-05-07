@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useState, useEffect} from "react"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import EventsDetail from "./EventsDetail";
 import EventsList from "./EventsList";
@@ -13,9 +13,14 @@ import Header from "../component/Header";
 
 const AppRouter = () => {
 
+    const [accounts, setAccounts] = useState(null);
+    const getAccounts = (data) => {
+        setAccounts(data);
+    }
+
     return (
         <BrowserRouter>
-            <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} />
+            <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} _getAccounts={getAccounts}/>
             <Routes>
                 <Route path="/home" element={<Home />} />
                 <Route path="/login" element={<Login />} />
@@ -23,7 +28,7 @@ const AppRouter = () => {
                 <Route path="/setting" element={<Setting />} />
                 <Route path="/events" element={<Events flag={'C'}/>} />
                 <Route path="/events/update/:events_id" element={<Events flag={'U'}/>} />
-                <Route path="/events/:events_id" element={<EventsDetail />} />
+                <Route path="/events/:events_id" element={<EventsDetail accounts={accounts}/>} />
                 <Route path="/events/list" element={<EventsList />} />
                 <Route path="/search" element={<SearchPage />} />
             </Routes>
