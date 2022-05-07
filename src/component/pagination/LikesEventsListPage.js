@@ -1,18 +1,19 @@
 import moment from 'moment';
 import React, {useState, useEffect} from 'react';
 import { RESPONSE_STATUS } from '../../common/ResponseStatus';
-import { createEventMainImage } from '../../common/Utils';
+import { createEventMainImage, getLocalStorageData } from '../../common/Utils';
 import API from '../../config/customAxios';
 import PaginatedItems from './PaginatedItems';
 
 
-const LikesEventsListPage = ({jwt}) => {
+const LikesEventsListPage = () => {
 
     // We start with an empty list of items.
     const itemsPerPage = 9;
     const [currentItems, setCurrentItems] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
     const [pageCount, setPageCount] = useState(0);
+    const {_jwt} = getLocalStorageData();
     
     useEffect(
         () => {
@@ -24,7 +25,7 @@ const LikesEventsListPage = ({jwt}) => {
     const getHomeData = async (page) => {
         const {data, status} = await API.get(`/api/v1/accounts/likes/events?page=${page}`, {
             headers : {
-                'Authorization': jwt
+                'Authorization': _jwt
             }
         })
         if (status === RESPONSE_STATUS.OK) {
@@ -50,7 +51,7 @@ const LikesEventsListPage = ({jwt}) => {
     const getEventsTotal = async () => {
         const {data, status} = await API.get("/api/v1/accounts/likes/events/size", {
             headers : {
-                'Authorization': jwt
+                'Authorization': _jwt
             }
         });
         if (status === RESPONSE_STATUS.OK) {

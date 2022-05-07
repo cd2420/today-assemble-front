@@ -1,13 +1,13 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, Grid, TextField, Typography} from '@mui/material';
+import { Button, Grid, TextField} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import { RESPONSE_STATUS } from '../../common/ResponseStatus';
-import { validatePassword } from '../../common/Utils';
+import { getLocalStorageData, validatePassword } from '../../common/Utils';
 import API from '../../config/customAxios';
 import PopUpPage from '../popup/PopUpPage';
 
 
-const PasswordPage = ({accounts, jwt}) => {
+const PasswordPage = ({accounts}) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -50,19 +50,23 @@ const PasswordPage = ({accounts, jwt}) => {
 
         accounts.password = password
         try {
-            const {status} = await API.put(
-                `/api/v1/accounts/${accounts.id}`
-                , JSON.stringify(accounts)
-                , {
-                    headers : {
-                        'Authorization': jwt
+            const {_jwt, is_ok} = getLocalStorageData();
+            if (_jwt && is_ok) {
+                const {status} = await API.put(
+                    `/api/v1/accounts/${accounts.id}`
+                    , JSON.stringify(accounts)
+                    , {
+                        headers : {
+                            'Authorization': _jwt
+                        }
                     }
-                }
-            )
+                )
 
-            if (status === RESPONSE_STATUS.OK) {
-                setIsOk(true)
+                if (status === RESPONSE_STATUS.OK) {
+                    setIsOk(true)
+                }
             }
+            
         } catch(e) {
             const errorStatus = e.response.status;
             if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {

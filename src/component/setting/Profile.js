@@ -2,13 +2,13 @@ import { LoadingButton } from '@mui/lab';
 import { FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import { RESPONSE_STATUS } from '../../common/ResponseStatus';
-import { adjustTimeZone, getAge, validateUserName } from '../../common/Utils';
+import { adjustTimeZone, getAge, getLocalStorageData, validateUserName } from '../../common/Utils';
 import API from '../../config/customAxios';
 import DateComponent from '../date/DateComponent';
 import MainImageUpload from '../pagination/MainImageUpload';
 import PopUpPage from '../popup/PopUpPage';
 
-const Profile = ({accounts, jwt}) => {
+const Profile = ({accounts}) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -74,19 +74,22 @@ const Profile = ({accounts, jwt}) => {
         adjustTimeZone(accounts.birth);
 
         try {
-            const {data, status, headers} = await API.put(
-                `/api/v1/accounts/${accounts.id}`
-                , JSON.stringify(accounts)
-                , {
-                    headers : {
-                        'Authorization': jwt
+            const {_jwt, is_ok} = getLocalStorageData();
+            if (_jwt && is_ok) {
+                const {data, status, headers} = await API.put(
+                    `/api/v1/accounts/${accounts.id}`
+                    , JSON.stringify(accounts)
+                    , {
+                        headers : {
+                            'Authorization': _jwt
+                        }
                     }
+                )
+                if (status === RESPONSE_STATUS.OK) {
+                    window.location.replace("/setting")
                 }
-            )
-
-            if (status === RESPONSE_STATUS.OK) {
-                window.location.replace("/setting")
             }
+            
         } catch (e) {
             const errorStatus = e.response.status;
             if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {

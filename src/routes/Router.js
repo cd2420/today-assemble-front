@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, {useState} from "react"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import EventsDetail from "./EventsDetail";
 import EventsList from "./EventsList";
@@ -25,7 +25,7 @@ const AppRouter = () => {
                 <Route path="/home" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signUp" element={<SignUp />} />
-                <Route path="/setting" element={<Setting />} />
+                <Route path="/setting" element={<Setting accounts={accounts}/>} />
                 <Route path="/events" element={<Events flag={'C'}/>} />
                 <Route path="/events/update/:events_id" element={<Events flag={'U'}/>} />
                 <Route path="/events/:events_id" element={<EventsDetail accounts={accounts}/>} />

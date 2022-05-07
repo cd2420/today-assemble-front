@@ -1,10 +1,7 @@
 import React, {useState, useEffect} from "react";
-import HEADER_SECTION from "../common/HeaderSection";
-import Header from "../component/Header";
-import CssBaseline from '@mui/material/CssBaseline';
+
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { getAccountsDataByJwt, getLocalStorageData } from "../common/Utils";
+import { getLocalStorageData } from "../common/Utils";
 import { Box, Button, ButtonGroup, Grid} from "@mui/material";
 
 import MyEventsListPage from "../component/pagination/MyEventsListPage";
@@ -12,40 +9,31 @@ import LikesEventsListPage from "../component/pagination/LikesEventsListPage";
 
 import Profile from "../component/setting/Profile";
 import PasswordPage from "../component/setting/PasswordPage";
-import { RESPONSE_STATUS } from "../common/ResponseStatus";
 import { useNavigate } from "react-router-dom";
 
 
 
-const Setting = () => {
+const Setting = ({accounts}) => {
 
     const navigate = useNavigate();
 
-    const [accounts, setAccounts] = useState(null);
-    const [jwt, setJwt] = useState('');
+    // const [accounts, setAccounts] = useState(null);
     const [profilePage, setProfilePage] = useState(true);
     const [passwordPage, setPasswordPage] = useState(false);
     const [myEventsPage, setMyEventsPage] = useState(false);
     const [likeEventsPage, setLikeEventsPage] = useState(false);
 
     useEffect(() => {
-        const {_jwt, is_ok } = getLocalStorageData();
-        if (is_ok) {
-            dataInit(_jwt);
-            
-        } else {
+        const data = getLocalStorageData();
+        if (!data.is_ok) {
+            // dataInit(_jwt);
             navigate('/login');
+        } else {
+            if (accounts) {
+                accounts.birth = new Date(accounts.birth);
+            }
         }
-    }, [])
-
-    const dataInit = async (_jwt) => {
-        const {data, status} = await getAccountsDataByJwt(_jwt);
-        if (status === RESPONSE_STATUS.OK) {
-            setJwt(_jwt);
-            data.birth = new Date(data.birth);
-            setAccounts(data);
-        }
-    }
+    }, [accounts])
 
     const changePage = (e) => {
         e.preventDefault();
@@ -84,9 +72,6 @@ const Setting = () => {
         <Button key="4" name="likes" variant={likeEventsPage ? "contained" : "outlined" } onClick={changePage}>관심 모임</Button>
     ];
 
-
-    const theme = createTheme();
-
     return (
 
         <Container component="main" >
@@ -112,22 +97,22 @@ const Setting = () => {
                 <Grid item xs={9}>
                     {
                         (accounts && profilePage && !passwordPage && !myEventsPage && !likeEventsPage) && (
-                            <Profile accounts={accounts} jwt={jwt} />
+                            <Profile accounts={accounts} />
                         )
                     }
                     {
                         (accounts && !profilePage && passwordPage && !myEventsPage && !likeEventsPage) && (
-                            <PasswordPage accounts={accounts} jwt={jwt} />
+                            <PasswordPage accounts={accounts} />
                         )
                     }
                     {
                         (accounts && !profilePage && !passwordPage && myEventsPage && !likeEventsPage) && (
-                            <MyEventsListPage jwt={jwt} />
+                            <MyEventsListPage />
                         )
                     }
                     {
                         (accounts && !profilePage && !passwordPage && !myEventsPage && likeEventsPage) && (
-                            <LikesEventsListPage jwt={jwt} />
+                            <LikesEventsListPage />
                         )
                     }
                 </Grid>
