@@ -283,11 +283,11 @@ const EventsDetail = ({accounts}) => {
                                 </Typography>
                                 <Box 
                                     sx={{
-                                    display: 'flex',
-                                    alignItems: 'space-evenly',
-                                    flexDirection: 'column',
-                                    p: 1,
-                                    m: 1
+                                        display: 'flex',
+                                        alignItems: 'space-evenly',
+                                        flexDirection: 'column',
+                                        p: 1,
+                                        m: 1
                                     }}
                                 >
                                     <Typography>

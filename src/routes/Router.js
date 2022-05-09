@@ -10,6 +10,7 @@ import Events from "./Events";
 import SearchPage from "./SearchPage";
 import HEADER_SECTION from "../common/HeaderSection";
 import Header from "../component/Header";
+import EventsPlaceSearch from "./EventsPlaceSearch";
 
 const AppRouter = () => {
 
@@ -30,6 +31,7 @@ const AppRouter = () => {
                 <Route path="/events/update/:events_id" element={<Events flag={'U'}/>} />
                 <Route path="/events/:events_id" element={<EventsDetail accounts={accounts}/>} />
                 <Route path="/events/list" element={<EventsList />} />
+                <Route path="/events/place" element={<EventsPlaceSearch />} />
                 <Route path="/search" element={<SearchPage />} />
             </Routes>
         </BrowserRouter>
