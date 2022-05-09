@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import HEADER_SECTION from "../common/HeaderSection";
-import { Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import Header from "../component/Header";
 import PaginatedItems from "../component/pagination/PaginatedItems";
 import API from "../config/customAxios";
 import { RESPONSE_STATUS } from "../common/ResponseStatus";
@@ -63,10 +60,6 @@ const EventsList = () => {
     const handlePageClick = async (event, value) => {
         getEventsList(value - 1);
     };
-
-    
-    const theme = createTheme();
-
     return (
 
         <main>

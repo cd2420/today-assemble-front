@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from "react";
 import API from "../config/customAxios";
-import { Avatar, Box, Container, createTheme, CssBaseline, FormControl, FormControlLabel, FormLabel, Grid, Link, Radio, RadioGroup, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Avatar, Box, Container, FormControl, FormControlLabel, FormLabel, Grid, Link, Radio, RadioGroup, TextField, ThemeProvider, Typography } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Header from "../component/Header";
-import HEADER_SECTION from "../common/HeaderSection";
 import {ERROR_CODE, LOCAL_STORAGE_CONST} from "../common/GlobalConst";
 import DateComponent from "../component/date/DateComponent";
 import {RESPONSE_STATUS} from "../common/ResponseStatus";
@@ -150,10 +148,6 @@ const SignUp = () => {
         
         return accounts;
     }
-
-    
-
-    const theme = createTheme();
 
     return (
 

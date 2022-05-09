@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from "react";
 import API from "../config/customAxios";
-import HEADER_SECTION from "../common/HeaderSection";
-import { Container, createTheme, CssBaseline, Grid, ThemeProvider } from "@mui/material";
-import Header from "../component/Header";
 import FeaturedPost from "../component/FeaturedPost";
 import moment from "moment";
 import { createEventMainImage } from "../common/Utils";
+import { Grid } from "@mui/material";
 
 
 const Home = () => {
@@ -36,8 +34,6 @@ const Home = () => {
         setEvents(data);
 
     }
-
-    const theme = createTheme();
 
     return (
 

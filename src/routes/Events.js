@@ -1,7 +1,4 @@
 import React, {useState, useEffect} from "react";
-import HEADER_SECTION from "../common/HeaderSection";
-import { Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import Header from "../component/Header";
 import EventsMaker from "../component/event/EventsMaker";
 import EventsUpdate from "../component/event/EventsUpdate";
 import { useNavigate, useParams } from "react-router-dom";
@@ -44,8 +41,6 @@ const Events= ({flag}) => {
         }
 
     }
-
-    const theme = createTheme();
 
     return (
 
