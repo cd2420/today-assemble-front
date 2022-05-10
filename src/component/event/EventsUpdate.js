@@ -246,7 +246,6 @@ const EventsUpdate = ({events, jwt}) => {
                                     name="eventsType"
                                     value={eventsType}
                                 >
-                                    <FormControlLabel value="ONLINE" control={<Radio />} label="온라인" />
                                     <FormControlLabel value="OFFLINE" control={<Radio />} label="오프라인" />
                                 </RadioGroup>
                             </FormControl>
