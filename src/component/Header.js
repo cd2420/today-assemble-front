@@ -105,7 +105,7 @@ function Header(props) {
 
     if (status === RESPONSE_STATUS.OK) {
       dataInit();
-      navigate('/home');
+      navigate('/');
     }
   }
 
@@ -134,7 +134,7 @@ function Header(props) {
     <React.Fragment>
       <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <ButtonGroup sx={{ flex: 1 }} variant="text" aria-label="text button group">
-          <Button href='/home'>
+          <Button href='/'>
             <Typography
               component="h2"
               variant="h5"

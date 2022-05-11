@@ -23,7 +23,7 @@ const AppRouter = () => {
         <BrowserRouter>
             <Header title={HEADER_SECTION.title} sections={HEADER_SECTION.sections} _getAccounts={getAccounts}/>
             <Routes>
-                <Route path="/home" element={<Home />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signUp" element={<SignUp />} />
                 <Route path="/setting" element={<Setting accounts={accounts}/>} />

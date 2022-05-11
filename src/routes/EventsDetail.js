@@ -253,7 +253,7 @@ const EventsDetail = ({accounts}) => {
 
     const removeEvents = async (e) => {
         await participateEventsManage(e);
-        navigate('/home');
+        navigate('/');
     }
     return (
 

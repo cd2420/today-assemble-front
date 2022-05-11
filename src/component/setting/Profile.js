@@ -76,7 +76,7 @@ const Profile = ({accounts}) => {
         try {
             const {_jwt, is_ok} = getLocalStorageData();
             if (_jwt && is_ok) {
-                const {data, status, headers} = await API.put(
+                const {status} = await API.put(
                     `/api/v1/accounts/${accounts.id}`
                     , JSON.stringify(accounts)
                     , {
@@ -95,7 +95,7 @@ const Profile = ({accounts}) => {
             if (errorStatus === RESPONSE_STATUS.FORBIDDEN) {
                 setAnchorEl(currentTarget);
             }  else {
-                const {errorCode, msg} = e.response.data
+                // const {errorCode, msg} = e.response.data
             }
             
         } finally {
