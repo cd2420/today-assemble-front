@@ -53,7 +53,7 @@ const PasswordPage = ({accounts}) => {
             const {_jwt, is_ok} = getLocalStorageData();
             if (_jwt && is_ok) {
                 const {status} = await API.put(
-                    `/api/v1/accounts/${accounts.id}`
+                    `/api/v1/accounts`
                     , JSON.stringify(accounts)
                     , {
                         headers : {

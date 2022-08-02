@@ -1,5 +1,6 @@
 import API from "../config/customAxios"
 import {LOCAL_STORAGE_CONST} from "./GlobalConst"
+import { RESPONSE_STATUS } from "./ResponseStatus"
 
 export function getLocalStorageData() {
     const _jwt = localStorage.getItem(LOCAL_STORAGE_CONST.ACCESS_TOKEN)
@@ -21,25 +22,30 @@ export function getLocalStorageData() {
 }
 
 export async function getAccountsDataByJwt(jwt) {
-    
-    let result = {}
+    const result = {
+        data : {},
+        is_false : false,
+        is_error : false
+    }
     try {
         const {data, status} = await API.get("/api/v1/accounts", {
             headers : {
                 'Authorization': jwt
             }
         })
-        result = {
-            data
-            , status
+
+        if (status === RESPONSE_STATUS.OK) {
+            result.data = data;
+            return result;
+        } else {
+            result.is_false = true;
+            return result;
         }
+        
     } catch(e) {
-        result = {
-            status: false
-        }
+        result.is_error = true;
+        return result;
     }
-    return result
-    
 }
 
 export function getAge(birth) {

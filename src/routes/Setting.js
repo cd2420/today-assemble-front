@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 
 import Container from '@mui/material/Container';
-import { getLocalStorageData } from "../common/Utils";
+import { getAccountsDataByJwt, getLocalStorageData } from "../common/Utils";
 import { Box, Button, ButtonGroup, Grid} from "@mui/material";
 
 import MyEventsListPage from "../component/pagination/MyEventsListPage";
@@ -12,12 +12,11 @@ import PasswordPage from "../component/setting/PasswordPage";
 import { useNavigate } from "react-router-dom";
 
 
-
-const Setting = ({accounts}) => {
+const Setting = () => {
 
     const navigate = useNavigate();
 
-    // const [accounts, setAccounts] = useState(null);
+    const [accounts, setAccounts] = useState(null);
     const [profilePage, setProfilePage] = useState(true);
     const [passwordPage, setPasswordPage] = useState(false);
     const [myEventsPage, setMyEventsPage] = useState(false);
@@ -29,11 +28,20 @@ const Setting = ({accounts}) => {
             // dataInit(_jwt);
             navigate('/login');
         } else {
-            if (accounts) {
-                accounts.birth = new Date(accounts.birth);
-            }
+            const jwt = data._jwt;
+            getAccounts(jwt);
         }
-    }, [accounts])
+    }, [])
+
+    const getAccounts = async (jwt) => {
+
+        const {data, is_error, is_false }= await getAccountsDataByJwt(jwt);
+        if (!is_false && !is_error) {
+            setAccounts(data);
+        } else {
+            navigate('/login');
+        } 
+    }
 
     const changePage = (e) => {
         e.preventDefault();

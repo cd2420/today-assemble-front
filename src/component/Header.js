@@ -69,26 +69,18 @@ function Header(props) {
   }
 
   const getAccounts = async (_jwt) => {
-    try {
-      const {data, status} = await getAccountsDataByJwt(_jwt);
-      
-      if (status === RESPONSE_STATUS.OK) {
-        setAccounts(data);
-        setJwt(_jwt);
-        setIsAuthorized(true);
-        _getAccounts(data);
-      } else {
-        dataInit();
-        navigate('/login');
-      }
-    } catch(e) {
-      console.log(e);
-      if (e.response.data && e.response.data.indexOf('ExpiredJwtException') > -1) {
-        // JWT 토큰 만료
-        dataInit();
-        navigate('/login');
-      }
-    }
+
+    const {data, is_error, is_false }= await getAccountsDataByJwt(_jwt);
+    
+    if (!is_false && !is_error) {
+      setAccounts(data);
+      setJwt(_jwt);
+      setIsAuthorized(true);
+      _getAccounts(data);
+    } else {
+      dataInit();
+      navigate('/login');
+    } 
   }
 
   const priflePage = () => {
