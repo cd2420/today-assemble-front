@@ -21,14 +21,16 @@ export function getLocalStorageData() {
     return result
 }
 
-export async function getAccountsDataByJwt(jwt) {
+export async function getAccountsDataByJwt(jwt, isWithImage) {
     const result = {
         data : {},
         is_false : false,
         is_error : false
     }
     try {
-        const {data, status} = await API.get("/api/v1/accounts", {
+        const withImage = isWithImage ? "true" : "false";
+        const url = `/api/v1/accounts?images=${withImage}`;
+        const {data, status} = await API.get(url, {
             headers : {
                 'Authorization': jwt
             }

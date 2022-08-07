@@ -35,7 +35,7 @@ const Setting = () => {
 
     const getAccounts = async (jwt) => {
 
-        const {data, is_error, is_false }= await getAccountsDataByJwt(jwt);
+        const {data, is_error, is_false }= await getAccountsDataByJwt(jwt, true);
         if (!is_false && !is_error) {
             setAccounts(data);
         } else {
