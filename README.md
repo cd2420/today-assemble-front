@@ -1,36 +1,61 @@
-- 메인 페이지 (로그인 X)
-![image_main_noLogin](image_folder_OnlyGitReadme/image_main_noLogin.png)
+# 🙋‍♂️ Today-Assemble - 오늘의 모임 프론트엔드 서버
 
-- 회원가입 페이지
-![signup_page](image_folder_OnlyGitReadme/signup_page.png)
+<br>
 
-- 회원가입 페이지(날짜 선택)
-![datePicker_in_signup_page](image_folder_OnlyGitReadme/datePicker_in_signup_page.png)
+## 💡 Introduction
 
-- 로그인 페이지 (이메일, 비밀번호)
-![login_page](image_folder_OnlyGitReadme/login_page.png)
+- 어느날 문득 영화가 보고싶었는데 같이 볼 사람이 없어서, `오늘 하루 영화 보고싶은 사람 누구 없나` 라는 생각으로 만들어본 사이트입니다.
+- 1회성 간단한 모임용 웹사이트입니다.
 
-- 로그인 페이지 (이메일)
-![login_page_by_email](image_folder_OnlyGitReadme/login_page_by_email.png)
+<br>
 
-- 내 계정 설정
-![myAccount_setting](image_folder_OnlyGitReadme/myAccount_setting.png)
-
-- 내 계정 설정 (비밀번호 변경)
-![myAccount_setting_password](image_folder_OnlyGitReadme/myAccount_setting_password.png)
-
-- 모임 생성 페이지
-![make_meeting](image_folder_OnlyGitReadme/make_meeting.png)
-
-- 모임 생성 페이지 (지도)
-![mapImage_in_make_meeting](image_folder_OnlyGitReadme/mapImage_in_make_meeting.png)
-
-- 모임 상세 페이지
-![image_meeting_detail_notMine](image_folder_OnlyGitReadme/image_meeting_detail_notMine.png)
-
-- 모임 상세 페이지 (내가 방장)
-![](image_folder_OnlyGitReadme/image_meeting_detail_mine.png)
+## 🔖 Stack
+- Front: `React.js`, `Node.js`, `Axios`, `MUI`, `KakaoMap OpenApi`
+- Build: `npm`
 
 
-## 없는 페이지
-- 알림 페이지 (ex. 상대방이 초대하면 알림이 뜨도록) / 초대 수락 및 거절 페이지
+<br>
+
+## 🔖 화면
+
+### 계정
+- 회원가입화면
+  1. 화면이동
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts1_1.gif)
+  2. 회원가입
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts1_2_1.gif)
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts1_2_2.gif)
+  3. email 중복체크
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts1_3.gif)
+- 회원인증
+  ![Alt Text](./image_folder_OnlyGitReadme/Accounts2_1.gif)
+- 계정정보화면
+  ![Alt Text](./image_folder_OnlyGitReadme/Accounts3.gif)
+  - 회원정보수정
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts3_1_1.gif)
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts3_1_2.gif)
+  - 비밀번호수정
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts3_2_1.gif)
+    ![Alt Text](./image_folder_OnlyGitReadme/Accounts3_2_2.gif)
+  - 내가 참여중인 모임
+  - 내가 `좋아요` 누른 모임
+- 이메일로 로그인(비밀번호 없이)
+  ![Alt Text](./image_folder_OnlyGitReadme/Accounts4_1.gif)
+  ![Alt Text](./image_folder_OnlyGitReadme/Accounts4_2.gif)
+
+
+
+### 모임
+- 모임생성화면
+- 모임상세화면
+  - `좋아요` 클릭
+  - 모임참여 클릭
+- 모임리스트화면
+- 모임수정화면
+  - 이미지 추가 및 삭제
+  - 모임정보수정
+
+### 메인
+- 메인화면
+- 검색기능
+- 지역검색 기능
