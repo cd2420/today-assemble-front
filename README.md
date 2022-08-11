@@ -16,7 +16,7 @@
 
 <br>
 
-## 🔖 화면
+## 🔖 화면 및 기능동작 확인
 
 ### 계정
 - 회원가입화면
@@ -37,8 +37,7 @@
   - 비밀번호수정
     ![Alt Text](./image_folder_OnlyGitReadme/Accounts3_2_1.gif)
     ![Alt Text](./image_folder_OnlyGitReadme/Accounts3_2_2.gif)
-  - 내가 참여중인 모임
-  - 내가 `좋아요` 누른 모임
+  
 - 이메일로 로그인(비밀번호 없이)
   ![Alt Text](./image_folder_OnlyGitReadme/Accounts4_1.gif)
   ![Alt Text](./image_folder_OnlyGitReadme/Accounts4_2.gif)
@@ -74,3 +73,11 @@
     ![Alt Text](./image_folder_OnlyGitReadme/Main1_2.gif)
 - 지역검색 기능
     ![Alt Text](./image_folder_OnlyGitReadme/Main2_1.gif)
+
+### 계정
+- 계정정보화면
+  - 내가 참여중인 모임
+    ![Alt Text](./image_folder_OnlyGitReadme/AccountsSetting1_1_1.gif)
+    ![Alt Text](./image_folder_OnlyGitReadme/AccountsSetting1_1_2.gif)
+  - 내가 `좋아요` 누른 모임
+    ![Alt Text](./image_folder_OnlyGitReadme/AccountsSetting2_1.gif)
