@@ -67,6 +67,10 @@
     ![Alt Text](./image_folder_OnlyGitReadme/Events4_2_2.gif)
 
 ### 메인
-- 메인화면
 - 검색기능
+  - 모임명으로 검색
+    ![Alt Text](./image_folder_OnlyGitReadme/Main1_1.gif)
+  - 태그로 검색
+    ![Alt Text](./image_folder_OnlyGitReadme/Main1_2.gif)
 - 지역검색 기능
+    ![Alt Text](./image_folder_OnlyGitReadme/Main2_1.gif)
