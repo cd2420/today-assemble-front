@@ -47,13 +47,24 @@
 
 ### 모임
 - 모임생성화면
+  ![Alt Text](./image_folder_OnlyGitReadme/Events1_1.gif)
+  ![Alt Text](./image_folder_OnlyGitReadme/Events1_2.gif)
+  - 모임 생성시 host가 중복되는 시간으로 모임만드는 거 방지
+    ![Alt Text](./image_folder_OnlyGitReadme/Events1_3.gif)
 - 모임상세화면
   - `좋아요` 클릭
+    ![Alt Text](./image_folder_OnlyGitReadme/Events2_1.gif)
   - 모임참여 클릭
+    ![Alt Text](./image_folder_OnlyGitReadme/Events2_2.gif)
 - 모임리스트화면
+    ![Alt Text](./image_folder_OnlyGitReadme/Events3_1.gif)
 - 모임수정화면
   - 이미지 추가 및 삭제
+    ![Alt Text](./image_folder_OnlyGitReadme/Events4_1_1.gif)
+    ![Alt Text](./image_folder_OnlyGitReadme/Events4_1_2.gif)
   - 모임정보수정
+    ![Alt Text](./image_folder_OnlyGitReadme/Events4_2_1.gif)
+    ![Alt Text](./image_folder_OnlyGitReadme/Events4_2_2.gif)
 
 ### 메인
 - 메인화면
